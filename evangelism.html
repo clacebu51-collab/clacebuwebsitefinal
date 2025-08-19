@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evangelism | ChristLife Assemblies Cebu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .font-serif {
+            font-family: 'Merriweather', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover {
+            color: #d69e2e; /* gold-500 */
+            border-bottom-color: #d69e2e;
+        }
+        .tab-button.active {
+            border-color: #d69e2e;
+            color: #d69e2e;
+            background-color: #fefcbf; /* yellow-100 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <img src="logoooo onlyyy.png" alt="ChristLife Assemblies Logo" class="h-5 w-5 mr-3 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/d69e2e/ffffff?text=Logo';">
+                <span class="text-2xl font-bold text-gray-800 font-serif">ChristLife Assemblies Cebu</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#about" class="nav-link text-gray-600 border-b-2 border-transparent">About Us</a>
+                <a href="talks.html" class="nav-link text-gray-600 border-b-2 border-transparent">Talks</a>
+                <a href="evangelism.html" class="nav-link text-yellow-600 border-b-2 border-yellow-600">Evangelism</a>
+                <a href="index.html#events" class="nav-link text-gray-600 border-b-2 border-transparent">Events</a>
+                <a href="index.html#gallery" class="nav-link text-gray-600 border-b-2 border-transparent">Gallery</a>
+                <a href="index.html#contact" class="nav-link text-gray-600 border-b-2 border-transparent">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="index.html#about" class="block py-2 px-4 text-sm hover:bg-gray-100">About Us</a>
+            <a href="talks.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Talks</a>
+            <a href="evangelism.html" class="block py-2 px-4 text-sm hover:bg-gray-100 bg-gray-100">Evangelism</a>
+            <a href="index.html#events" class="block py-2 px-4 text-sm hover:bg-gray-100">Events</a>
+            <a href="index.html#gallery" class="block py-2 px-4 text-sm hover:bg-gray-100">Gallery</a>
+            <a href="index.html#contact" class="block py-2 px-4 text-sm hover:bg-gray-100">Contact</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold font-serif text-gray-800">Foundations of Faith</h1>
+            <p class="text-gray-600 mt-2">Understanding the principles of the Gospel.</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="mb-8 border-b border-gray-200">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" role="tablist">
+                <li class="mr-2" role="presentation">
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg active" id="sin-tab" type="button" role="tab" aria-controls="sin" aria-selected="true">Sin</button>
+                </li>
+                <li class="mr-2" role="presentation">
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="baptism-tab" type="button" role="tab" aria-controls="baptism" aria-selected="false">Baptism</button>
+                </li>
+                <li class="mr-2" role="presentation">
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="holyspirit-tab" type="button" role="tab" aria-controls="holyspirit" aria-selected="false">Holy Spirit</button>
+                </li>
+                <li role="presentation">
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg" id="repentance-tab" type="button" role="tab" aria-controls="repentance" aria-selected="false">Repentance</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tabContent">
+            <!-- Sin Tab -->
+            <div class="p-4 rounded-lg bg-white shadow" id="sin" role="tabpanel" aria-labelledby="sin-tab">
+                <h2 class="text-2xl font-bold font-serif mb-4">The Nature of Sin</h2>
+                <p class="mb-6 text-gray-700">Sin is any act, feeling, or thought that goes against God's perfect law and character. It separates us from God, but the good news is that Jesus Christ paid the price for our sins on the cross.</p>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Romans 3:23</p>
+                        <p class="text-gray-600">"...for all have sinned and fall short of the glory of God."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Romans 6:23</p>
+                        <p class="text-gray-600">"For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">1 John 1:9</p>
+                        <p class="text-gray-600">"If we confess our sins, he is faithful and just and will forgive us our sins and purify us from all unrighteousness."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baptism Tab -->
+            <div class="hidden p-4 rounded-lg bg-white shadow" id="baptism" role="tabpanel" aria-labelledby="baptism-tab">
+                <h2 class="text-2xl font-bold font-serif mb-4">The Ordinance of Baptism</h2>
+                <p class="mb-6 text-gray-700">Baptism is an outward expression of an inward commitment to Jesus Christ. It symbolizes the death of our old, sinful selves and our resurrection to a new life in Him. It is a public declaration of our faith.</p>
+                 <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Matthew 28:19</p>
+                        <p class="text-gray-600">"Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Acts 2:38</p>
+                        <p class="text-gray-600">"Peter replied, 'Repent and be baptized, every one of you, in the name of Jesus Christ for the forgiveness of your sins. And you will receive the gift of the Holy Spirit.'"</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Romans 6:4</p>
+                        <p class="text-gray-600">"We were therefore buried with him through baptism into death in order that, just as Christ was raised from the dead through the glory of the Father, we too may live a new life."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holy Spirit Tab -->
+            <div class="hidden p-4 rounded-lg bg-white shadow" id="holyspirit" role="tabpanel" aria-labelledby="holyspirit-tab">
+                <h2 class="text-2xl font-bold font-serif mb-4">The Gift of the Holy Spirit</h2>
+                <p class="mb-6 text-gray-700">The Holy Spirit is the third person of the Trinity, given to believers as a comforter, guide, and source of power. He dwells within us, seals our salvation, and empowers us to live a godly life and be effective witnesses for Christ.</p>
+                 <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">John 14:26</p>
+                        <p class="text-gray-600">"But the Advocate, the Holy Spirit, whom the Father will send in my name, will teach you all things and will remind you of everything I have said to you."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Acts 1:8</p>
+                        <p class="text-gray-600">"But you will receive power when the Holy Spirit comes on you; and you will be my witnesses in Jerusalem, and in all Judea and Samaria, and to the ends of the earth."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Galatians 5:22-23</p>
+                        <p class="text-gray-600">"But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control. Against such things there is no law."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Repentance Tab -->
+            <div class="hidden p-4 rounded-lg bg-white shadow" id="repentance" role="tabpanel" aria-labelledby="repentance-tab">
+                <h2 class="text-2xl font-bold font-serif mb-4">The Call to Repentance</h2>
+                <p class="mb-6 text-gray-700">Repentance is a sincere turning away from sin and turning toward God. It involves a change of mind, heart, and direction. It is not just feeling sorry for sin, but a conscious decision to forsake it and follow Christ.</p>
+                 <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Acts 3:19</p>
+                        <p class="text-gray-600">"Repent, then, and turn to God, so that your sins may be wiped out, that times of refreshing may come from the Lord."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">2 Corinthians 7:10</p>
+                        <p class="text-gray-600">"Godly sorrow brings repentance that leads to salvation and leaves no regret, but worldly sorrow brings death."</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-yellow-500">
+                        <p class="font-semibold">Luke 13:3</p>
+                        <p class="text-gray-600">"I tell you, no! But unless you repent, you too will all perish."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-center md:text-left">© 2025 ChristLife Assemblies Cebu. All Rights Reserved.</p>
+                <div class="flex mt-4 md:mt-0 space-x-6">
+                    <a href="https://www.facebook.com/ChristlifeAssembliesCebu" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanels = document.querySelectorAll('#tabContent > div');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Deactivate all buttons and hide all panels
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                tabPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                });
+
+                // Activate the clicked button and show its panel
+                button.classList.add('active');
+                button.setAttribute('aria-selected', 'true');
+                const targetPanelId = button.getAttribute('aria-controls');
+                document.getElementById(targetPanelId).classList.remove('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>
