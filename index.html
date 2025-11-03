@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 1. Import Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -36,7 +38,6 @@
             transform: scale(1.05);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        /* Added for dynamically loaded cards to have consistent height */
         .talk-card-image {
             height: 12rem; /* 192px */
             width: 100%;
@@ -45,7 +46,6 @@
             border-top-right-radius: 0.5rem; /* rounded-lg */
         }
         .talk-card-description {
-            /* Set a fixed height and hide overflow */
             height: 4.5rem; /* 3 lines of text */
             overflow: hidden;
             display: -webkit-box;
@@ -129,7 +129,7 @@
         </div>
     </section>
 
-    <!-- ### DYNAMIC RECENT TALKS SECTION ### -->
+    <!-- ### DYNAMIC RECENT TALKS SECTION (SUPABASE) ### -->
     <section id="sermons" class="py-20">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
@@ -199,15 +199,15 @@
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="community.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Community';">
                 </div>
                 <div class="grid gap-4">
-                     <img class="gallery-img h-auto max-w-full rounded-lg" src="baptism.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Baptism';">
+                     <img class="gallery-img h-auto max-w-full rounded-lg" src="baptism.jpg" alt="" onerror="this.onerror=null;this.src='https->placehold.co/400x400/a0aec0/ffffff?text=Baptism';">
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="fellowship.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x600/a0aec0/ffffff?text=Fellowship';">
                 </div>
                 <div class="grid gap-4">
-                    <img class="gallery-img h-auto max-w-full rounded-lg" src="youth.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x600/a0aec0/ffffff?text=Youth+Group';">
+                    <img class="gallery-img h-auto max-w-full rounded-lg" src="youth.jpg" alt="" onerror="this.onerror=null;this.src='httpshttps://placehold.co/400x600/a0aec0/ffffff?text=Youth+Group';">
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="outreach.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Outreach';">
                 </div>
                 <div class="grid gap-4">
-                    <img class="gallery-img h-auto max-w-full rounded-lg" src="prayer.jpg" alt="" onerror="this.onerror=null;this.src='httpsG://placehold.co/400x400/a0aec0/ffffff?text=Prayer';">
+                    <img class="gallery-img h-auto max-w-full rounded-lg" src="prayer.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Prayer';">
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="events.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x600/a0aec0/ffffff?text=Celebration';">
                 </div>
             </div>
@@ -228,7 +228,7 @@
                     <p class="mb-4"><i class="fas fa-envelope mr-2 text-yellow-600"></i>clacebu51@gmail.com</p>
                     <div class="h-80 rounded-lg shadow-lg overflow-hidden">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4668.177300868709!2d123.89360720417903!3d10.305539569295638!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9995396ee3a2b%3A0xf4f76cc2e3810ab!2sSouthwestern%20University%20(SWU)%20PHINMA!5e0!3m2!1sen!2sph!4v1754547631292!5m2!1sen!2sph"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.352462228514!2d123.8879683153549!3d10.31174699263445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9994abe988941%3A0x63a48e8983e23297!2sUrgello%20St%2C%20Cebu%20City%2C%20Cebu!5e0!3m2!1sen!2sph!4v1678886543210!5m2!1sen!2sph"
                             width="100%" 
                             height="100%" 
                             style="border:0;" 
@@ -263,7 +263,7 @@
             </div>
         </div>
     </section>
-
+    
     <footer class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -290,12 +290,9 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
-
-                // Close mobile menu on link click
                 if (!mobileMenu.classList.contains('hidden')) {
                     mobileMenu.classList.add('hidden');
                 }
@@ -303,59 +300,43 @@
         });
     </script>
 
-    <!-- ### NEW SCRIPT FOR FIREBASE (UPDATED) ### -->
+    <!-- ### NEW SCRIPT FOR SUPABASE ### -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInAnonymously, 
-            signInWithCustomToken
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            getDocs, 
-            query, 
-            orderBy, 
-            limit, 
-            setLogLevel 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- Firebase Config (UPDATED) ---
-        // Check for Canvas-injected variables first
-        const configStr = typeof __firebase_config !== 'undefined' 
-            ? __firebase_config 
-            : (typeof VITE_FIREBASE_CONFIG !== 'undefined' ? VITE_FIREBASE_CONFIG : 'null');
+        // 2. Get Supabase Keys from Environment Variables
+        // This attempts to read variables from Netlify (VITE_...)
+        // In a local preview, these fallbacks will be used.
+        const SUPABASE_URL = typeof VITE_SUPABASE_URL !== 'undefined'
+            ? VITE_SUPABASE_URL
+            : (typeof __app_id !== 'undefined' ? "https_preview_id.supabase.co" : "YOUR_SUPABASE_URL"); // Fallback for preview
             
-        const firebaseConfig = JSON.parse(configStr) || {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Check for Canvas-injected app ID first
-        const appId = typeof __app_id !== 'undefined' 
-            ? __app_id 
-            : (typeof VITE_APP_ID !== 'undefined' ? VITE_APP_ID : 'default-app-id');
-
-        // --- Initialize Firebase ---
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        setLogLevel('Debug');
+        const SUPABASE_ANON_KEY = typeof VITE_SUPABASE_ANON_KEY !== 'undefined'
+            ? VITE_SUPABASE_ANON_KEY
+            : (typeof __firebase_config !== 'undefined' ? "preview_key" : "YOUR_SUPABASE_ANON_KEY"); // Fallback for preview
 
         // --- UI Elements ---
         const recentTalksList = document.getElementById('recent-talks-list');
         const recentTalksLoading = document.getElementById('recent-talks-loading');
 
+        // --- Initialize Supabase ---
+        let supabase;
+        try {
+            if (SUPABASE_URL === "YOUR_SUPABASE_URL" || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY") {
+                // This error will show on the live site if Netlify variables are missing
+                throw new Error("Supabase environment variables are not set.");
+            }
+            // 3. Create the Supabase client
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (error) {
+            console.error("Supabase initialization failed:", error);
+            // Display error to the user
+            recentTalksLoading.innerHTML = `<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error: Could not connect to database. Please check Netlify variables.</p>`;
+        }
+
         // --- Helper Function to format date ---
         function formatTalkDate(dateString) {
             if (!dateString) return 'Undated';
             try {
-                // Add T00:00:00 to ensure date is parsed in local timezone, not UTC
+                // Add T00:00:00 to ensure the date is parsed in local time, not UTC
                 const date = new Date(dateString + 'T00:00:00');
                 return date.toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -364,22 +345,25 @@
                 });
             } catch (e) {
                 console.warn("Could not parse date:", dateString);
-                return dateString;
+                return dateString; // Fallback to the raw string
             }
         }
 
         // --- Fetch and Render Recent Talks ---
         async function fetchRecentTalks() {
-            try {
-                const talksCollectionRef = collection(db, `artifacts/${appId}/public/data/talks`);
-                // Query for the 3 most recent talks, ordered by 'createdAt' timestamp descending
-                const q = query(talksCollectionRef, orderBy('createdAt', 'desc'), limit(3));
-                const querySnapshot = await getDocs(q);
+            if (!supabase) return; // Don't run if init failed
 
-                const talks = [];
-                querySnapshot.forEach((doc) => {
-                    talks.push({ id: doc.id, ...doc.data() });
-                });
+            try {
+                // 4. Query Supabase for the 3 most recent talks
+                // 'talks' is the table name
+                // 'created_at' is the default timestamp column Supabase adds
+                const { data: talks, error } = await supabase
+                    .from('talks')
+                    .select('*') // Select all columns
+                    .order('created_at', { ascending: false }) // Order by newest first
+                    .limit(3); // Only get 3
+
+                if (error) throw error; // Throw error to be caught by catch block
 
                 // Clear loading spinner
                 recentTalksList.innerHTML = '';
@@ -389,29 +373,23 @@
                     return;
                 }
 
-                // Render talks
+                // 5. Render talks
                 talks.forEach(talk => {
                     const talkCard = document.createElement('div');
-                    // Removed p-6, added shadow-lg and rounded-lg
-                    talkCard.className = 'bg-white rounded-lg shadow-lg flex flex-col';
+                    talkCard.className = 'bg-white rounded-lg shadow-lg flex flex-col overflow-hidden'; // Added overflow-hidden
                     
                     const formattedDate = formatTalkDate(talk.date);
                     const title = talk.title || 'Untitled Talk';
                     
-                    // Use coverPhotoURL if it exists, otherwise use a placeholder
-                    const imageURL = talk.coverPhotoURL || `https://placehold.co/600x400/d69e2e/ffffff?text=${encodeURIComponent(title.split(' ').slice(0,3).join(' '))}`;
-
-                    // Truncate description for the homepage
+                    // Use cover photo, or a placeholder if missing
+                    const imageURL = talk.cover_photo_url || `https://placehold.co/600x400/d69e2e/ffffff?text=${encodeURIComponent(title.split(' ').slice(0,3).join(' '))}`;
                     let description = talk.description || 'No description available.';
-
-                    // Truncate title for the homepage
-                    let truncatedTitle = title;
-                    if (title.length > 50) {
-                        truncatedTitle = title.substring(0, 50) + '...';
-                    }
+                    
+                    // Truncate title for display
+                    let truncatedTitle = title.length > 50 ? title.substring(0, 50) + '...' : title;
 
                     talkCard.innerHTML = `
-                        <img src="${imageURL}" alt="${title}" class="talk-card-image" onerror="this.onerror=null;this.src='httpsLog://placehold.co/600x400/d69e2e/ffffff?text=Image+Error';this.style.objectFit='contain';">
+                        <img src="${imageURL}" alt="${title}" class="talk-card-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/d69e2e/ffffff?text=Image+Error';this.style.objectFit='contain';">
                         <div class="p-6 flex-grow flex flex-col">
                             <div class="flex-grow">
                                 <h3 class="font-bold text-xl mb-2 font-serif" title="${talk.title}">${truncatedTitle}</h3>
@@ -426,29 +404,15 @@
                     recentTalksList.appendChild(talkCard);
                 });
 
-            } catch (error)
-            {
+            } catch (error) {
                 console.error("Error fetching recent talks: ", error);
-                recentTalksLoading.innerHTML = '<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error loading talks. Please refresh the page.</p>';
+                recentTalksList.innerHTML = ''; // Clear loading
+                recentTalksLoading.innerHTML = `<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error loading talks: ${error.message}</p>`;
             }
         }
 
         // --- Initial Load ---
-        (async () => {
-            // Sign in anonymously or with token to access Firestore
-            try {
-                if (typeof __initial_auth_token !== 'undefined') {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth failed:", error);
-            }
-            
-            // Fetch talks after auth
-            fetchRecentTalks();
-        })();
+        fetchRecentTalks();
     </script>
 
 </body>
