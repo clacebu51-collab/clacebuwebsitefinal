@@ -36,6 +36,45 @@
                 </div>
                 <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login</button>
                 <p id="login-error" class="text-red-500 text-xs italic mt-4 text-center"></p>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Don't have an account? 
+                    <a href="#" id="show-register-link" class="font-medium text-yellow-600 hover:text-yellow-500">
+                        Register here
+                    </a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Registration Form (Hidden by default) -->
+        <div id="register-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Registration</h2>
+            <form id="register-form">
+                <div class="mb-4">
+                    <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Password (min. 6 characters):</label>
+                    <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password:</label>
+                    <input type="password" id="confirm-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-6">
+                    <label for="register-secret" class="block text-gray-700 text-sm font-bold mb-2">Registration Secret:</label>
+                    <input type="password" id="register-secret" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <p class="text-xs text-gray-500 mt-1">A secret key is required to create an admin account.</p>
+                </div>
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Register</button>
+                <p id="register-error" class="text-red-500 text-xs italic mt-4 text-center"></p>
+                <p id="register-success" class="text-green-600 text-xs italic mt-4 text-center"></p>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Already have an account? 
+                    <a href="#" id="show-login-link" class="font-medium text-yellow-600 hover:text-yellow-500">
+                        Login here
+                    </a>
+                </p>
             </form>
         </div>
 
@@ -89,7 +128,8 @@
         import { 
             getAuth, 
             onAuthStateChanged, 
-            signInWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword, // Added for registration
             signOut,
             signInAnonymously,
             signInWithCustomToken
@@ -101,6 +141,12 @@
             serverTimestamp, 
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- IMPORTANT: REGISTRATION SECRET ---
+        // !! CHANGE THIS VALUE to a strong, unique password !!
+        // This is the "secret key" users must enter to register.
+        const REGISTRATION_SECRET = "clacebu_admin_secret_key"; 
+        // Example: "MySuperSecretKey123!"
 
         // --- Firebase Config (UPDATED) ---
         // This logic now checks for Netlify variables (VITE_) first,
@@ -137,15 +183,25 @@
             console.error("Firebase initialization failed:", error);
             // Display a user-friendly error on the page
             const loginContainer = document.getElementById('login-container');
-            loginContainer.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Firebase. Please check your Netlify environment variables and re-deploy.</p>`;
+            if (loginContainer) {
+                loginContainer.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Firebase. Please check your Netlify environment variables and re-deploy.</p>`;
+            }
         }
         
-
         // --- UI Elements ---
         const loginContainer = document.getElementById('login-container');
+        const registerContainer = document.getElementById('register-container'); // Added
         const adminContent = document.getElementById('admin-content');
+        
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
+        const registerForm = document.getElementById('register-form'); // Added
+        const registerError = document.getElementById('register-error'); // Added
+        const registerSuccess = document.getElementById('register-success'); // Added
+
+        const showRegisterLink = document.getElementById('show-register-link'); // Added
+        const showLoginLink = document.getElementById('show-login-link'); // Added
+        
         const logoutButton = document.getElementById('logout-button');
         const addTalkForm = document.getElementById('add-talk-form');
         const formSuccess = document.getElementById('form-success');
@@ -153,31 +209,46 @@
         const submitTalkButton = document.getElementById('submit-talk-button');
         const uploadStatus = document.getElementById('upload-status');
 
+        // --- Form Toggle Logic ---
+        if (showRegisterLink) {
+            showRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginContainer.classList.add('hidden');
+                registerContainer.classList.remove('hidden');
+            });
+        }
+
+        if (showLoginLink) {
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginContainer.classList.remove('hidden');
+                registerContainer.classList.add('hidden');
+            });
+        }
+
         // --- Auth State Logic ---
         if (auth) {
             onAuthStateChanged(auth, async (user) => {
                 if (user && !user.isAnonymous) {
                     // User is logged in
                     loginContainer.classList.add('hidden');
+                    registerContainer.classList.add('hidden'); // Hide register form too
                     adminContent.classList.remove('hidden');
                 } else {
                     // User is logged out or anonymous
-                    loginContainer.classList.remove('hidden');
+                    loginContainer.classList.remove('hidden'); // Show login form
                     adminContent.classList.add('hidden');
                     
-                    // Try to sign in with custom token (for Canvas preview) or anonymously (for live site auth check)
                     try {
                         if (typeof __initial_auth_token !== 'undefined') {
                             await signInWithCustomToken(auth, __initial_auth_token);
                         } else if (auth.currentUser === null) { 
-                            // Only sign in anonymously if no one is signed in
-                            // This is to check if the connection is valid
                             await signInAnonymously(auth);
                             console.log("Signed in anonymously to check connection.");
                         }
                     } catch (error) {
                         console.error("Anonymous/Custom token sign-in failed:", error.message);
-                        if (error.code === 'auth/api-key-not-valid') {
+                        if (error.code === 'auth/api-key-not-valid' && loginError) {
                            loginError.textContent = "Auth Error: Invalid API Key. Check Netlify variables.";
                         }
                     }
@@ -199,6 +270,51 @@
                 } catch (error) {
                     console.error("Login failed:", error);
                     loginError.textContent = "Login failed. Please check your email and password.";
+                }
+            });
+        }
+
+        // --- Registration Form Submit ---
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                registerError.textContent = '';
+                registerSuccess.textContent = '';
+
+                const email = registerForm['register-email'].value;
+                const password = registerForm['register-password'].value;
+                const confirmPassword = registerForm['confirm-password'].value;
+                const secret = registerForm['register-secret'].value;
+
+                // 1. Check Secret Key
+                if (secret !== REGISTRATION_SECRET) {
+                    registerError.textContent = 'Incorrect Registration Secret. Account not created.';
+                    return;
+                }
+
+                // 2. Check Passwords
+                if (password !== confirmPassword) {
+                    registerError.textContent = 'Passwords do not match.';
+                    return;
+                }
+
+                // 3. Create User
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    console.log('Successfully registered user:', userCredential.user.email);
+                    registerSuccess.textContent = 'Registration successful! You will be logged in automatically.';
+                    // Auth state change will automatically log them in and show admin panel.
+                    registerForm.reset();
+
+                } catch (error) {
+                    console.error("Registration failed:", error);
+                    if (error.code === 'auth/weak-password') {
+                        registerError.textContent = 'Password is too weak (must be at least 6 characters).';
+                    } else if (error.code === 'auth/email-already-in-use') {
+                        registerError.textContent = 'This email is already in use.';
+                    } else {
+                        registerError.textContent = 'Registration failed. Please try again.';
+                    }
                 }
             });
         }
@@ -226,38 +342,32 @@
                 uploadStatus.classList.remove('hidden');
 
                 try {
-                    // 1. Get Cover Photo URL from the text input
                     const coverPhotoURL = addTalkForm['cover-photo-url'].value || null;
-
-                    // 2. Prepare Talk Data
                     const talkData = {
                         title: addTalkForm['talk-title'].value,
                         speaker: addTalkForm['speaker-name'].value,
-                        date: addTalkForm['talk-date'].value, // Stores date as "YYYY-MM-DD"
+                        date: addTalkForm['talk-date'].value,
                         description: addTalkForm['talk-description'].value,
                         gdrive_link: addTalkForm['gdrive-link'].value,
-                        coverPhotoURL: coverPhotoURL, // Add the URL from the input field
-                        createdAt: serverTimestamp() // Adds a timestamp for sorting
+                        coverPhotoURL: coverPhotoURL,
+                        createdAt: serverTimestamp()
                     };
 
-                    // 3. Save Talk to Firestore
                     const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/talks`), talkData);
                     
                     formSuccess.textContent = 'Talk added successfully!';
                     addTalkForm.reset();
                     console.log("Document written with ID: ", docRef.id);
                     
-                    // Hide success message after 3 seconds
                     setTimeout(() => { formSuccess.textContent = ''; }, 3000);
 
                 } catch (error) {
                     console.error("Error adding document: ", error);
                     formError.textContent = 'Error adding talk. Please try again.';
                 } finally {
-                    // Re-enable button and hide status
                     submitTalkButton.disabled = false;
                     uploadStatus.classList.add('hidden');
-                    uploadStatus.textContent = ''; // Reset text
+                    uploadStatus.textContent = '';
                 }
             });
         }
