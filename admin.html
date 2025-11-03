@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | ChristLife Assemblies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Merriweather', serif; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
+            <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-6">
+
+        <!-- Login Form -->
+        <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                    <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login</button>
+                <p id="login-error" class="text-red-500 text-xs italic mt-4 text-center"></p>
+            </form>
+        </div>
+
+        <!-- Admin Content (Hidden by default) -->
+        <div id="admin-content" class="hidden max-w-xl mx-auto">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+                    <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
+                </div>
+                <form id="add-talk-form">
+                    <div class="mb-4">
+                        <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title:</label>
+                        <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="speaker-name" class="block text-gray-700 text-sm font-bold mb-2">Speaker Name:</label>
+                        <input type="text" id="speaker-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Talk Date:</label>
+                        <input type="date" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+                        <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
+                        <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <!-- MODIFIED COVER PHOTO FIELD -->
+                    <div class="mb-4">
+                        <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
+                        <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
+                    </div>
+                    <!-- END MODIFIED FIELD -->
+                    <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
+                        Add Talk to Website
+                    </button>
+                    <!-- Status message -->
+                    <div id="upload-status" class="hidden text-center mt-4 text-blue-600"></div>
+                </form>
+                <p id="form-success" class="text-green-600 text-center mt-4"></p>
+                <p id="form-error" class="text-red-500 text-center mt-4"></p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            signOut,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            serverTimestamp, 
+            setLogLevel 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // REMOVED STORAGE IMPORTS
+
+        // --- Firebase Config ---
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null') || {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // --- Initialize Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        // REMOVED getStorage()
+        setLogLevel('Debug');
+
+        // --- UI Elements ---
+        const loginContainer = document.getElementById('login-container');
+        const adminContent = document.getElementById('admin-content');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const logoutButton = document.getElementById('logout-button');
+        const addTalkForm = document.getElementById('add-talk-form');
+        const formSuccess = document.getElementById('form-success');
+        const formError = document.getElementById('form-error');
+        const submitTalkButton = document.getElementById('submit-talk-button');
+        const uploadStatus = document.getElementById('upload-status');
+        // REMOVED coverPhotoInput
+
+        // --- Auth State Logic ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !user.isAnonymous) {
+                // User is logged in
+                loginContainer.classList.add('hidden');
+                adminContent.classList.remove('hidden');
+            } else {
+                // User is logged out or anonymous
+                loginContainer.classList.remove('hidden');
+                adminContent.classList.add('hidden');
+                
+                // Try to sign in with custom token if available, otherwise anonymously
+                try {
+                    if (typeof __initial_auth_token !== 'undefined') {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Anonymous sign-in failed:", error);
+                }
+            }
+        });
+
+        // --- Login Form Submit ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginError.textContent = '';
+            const email = loginForm['email'].value;
+            const password = loginForm['password'].value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // Auth state change will handle UI
+            } catch (error) {
+                console.error("Login failed:", error);
+                loginError.textContent = "Login failed. Please check your email and password.";
+            }
+        });
+
+        // --- Logout Button ---
+        logoutButton.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                // Auth state change will handle UI and sign in anonymously
+            } catch (error) {
+                console.error("Logout failed:", error);
+            }
+        });
+
+        // --- Add Talk Form Submit (UPDATED) ---
+        addTalkForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formSuccess.textContent = '';
+            formError.textContent = '';
+            submitTalkButton.disabled = true;
+            uploadStatus.textContent = 'Saving talk...'; // Changed status message
+            uploadStatus.classList.remove('hidden');
+
+            try {
+                // 1. Get Cover Photo URL from the text input
+                const coverPhotoURL = addTalkForm['cover-photo-url'].value || null;
+
+                // 2. Prepare Talk Data
+                const talkData = {
+                    title: addTalkForm['talk-title'].value,
+                    speaker: addTalkForm['speaker-name'].value,
+                    date: addTalkForm['talk-date'].value, // Stores date as "YYYY-MM-DD"
+                    description: addTalkForm['talk-description'].value,
+                    gdrive_link: addTalkForm['gdrive-link'].value,
+                    coverPhotoURL: coverPhotoURL, // Add the URL from the input field
+                    createdAt: serverTimestamp() // Adds a timestamp for sorting
+                };
+
+                // 3. Save Talk to Firestore
+                const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/talks`), talkData);
+                
+                formSuccess.textContent = 'Talk added successfully!';
+                addTalkForm.reset();
+                console.log("Document written with ID: ", docRef.id);
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => { formSuccess.textContent = ''; }, 3000);
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                formError.textContent = 'Error adding talk. Please try again.';
+            } finally {
+                // Re-enable button and hide status
+                submitTalkButton.disabled = false;
+                uploadStatus.classList.add('hidden');
+                uploadStatus.textContent = ''; // Reset text
+            }
+        });
+
+    </script>
+</body>
+</html>
+
