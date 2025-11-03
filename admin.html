@@ -9,6 +9,25 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; }
         .font-serif { font-family: 'Merriweather', serif; }
+        /* Simple Google Button Style */
+        .btn-google {
+            background-color: #4285F4;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-google:hover {
+            background-color: #357ae8;
+        }
+        .btn-google img {
+            display: inline-block;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            background-color: white;
+            padding: 2px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -25,6 +44,19 @@
         <!-- Login Form -->
         <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
             <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
+            
+            <!-- Google Sign-in Button -->
+            <button id="google-login-button" class="btn-google font-bold py-2 px-4 rounded-full w-full transition duration-300 flex items-center justify-center mb-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google icon" />
+                Sign in with Google
+            </button>
+
+            <div class="relative flex py-3 items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink mx-4 text-gray-500 text-sm">Or with email</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
             <form id="login-form">
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
@@ -34,47 +66,9 @@
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
                     <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login</button>
-                <p id="login-error" class="text-red-500 text-xs italic mt-4 text-center"></p>
-                <p class="text-center text-sm text-gray-600 mt-4">
-                    Don't have an account? 
-                    <a href="#" id="show-register-link" class="font-medium text-yellow-600 hover:text-yellow-500">
-                        Register here
-                    </a>
-                </p>
-            </form>
-        </div>
-
-        <!-- Registration Form (Hidden by default) -->
-        <div id="register-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Registration</h2>
-            <form id="register-form">
-                <div class="mb-4">
-                    <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                    <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Password (min. 6 characters):</label>
-                    <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password:</label>
-                    <input type="password" id="confirm-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-6">
-                    <label for="register-secret" class="block text-gray-700 text-sm font-bold mb-2">Registration Secret:</label>
-                    <input type="password" id="register-secret" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    <p class="text-xs text-gray-500 mt-1">A secret key is required to create an admin account.</p>
-                </div>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Register</button>
-                <p id="register-error" class="text-red-500 text-xs italic mt-4 text-center"></p>
-                <p id="register-success" class="text-green-600 text-xs italic mt-4 text-center"></p>
-                <p class="text-center text-sm text-gray-600 mt-4">
-                    Already have an account? 
-                    <a href="#" id="show-login-link" class="font-medium text-yellow-600 hover:text-yellow-500">
-                        Login here
-                    </a>
-                </p>
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login with Email</button>
+                <p id="login-error" class="text-red-500 text-sm italic mt-4 text-center"></p>
+                <!-- Registration link is removed for security -->
             </form>
         </div>
 
@@ -82,7 +76,10 @@
         <div id="admin-content" class="hidden max-w-xl mx-auto">
             <div class="bg-white p-8 rounded-lg shadow-md">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+                    <div>
+                        <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+                        <p id="admin-email" class="text-sm text-gray-500"></p>
+                    </div>
                     <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
                 </div>
                 <form id="add-talk-form">
@@ -129,7 +126,8 @@
             getAuth, 
             onAuthStateChanged, 
             signInWithEmailAndPassword,
-            createUserWithEmailAndPassword, // Added for registration
+            GoogleAuthProvider,     // NEW: Import Google provider
+            signInWithPopup,        // NEW: Import Popup sign-in
             signOut,
             signInAnonymously,
             signInWithCustomToken
@@ -137,20 +135,15 @@
         import { 
             getFirestore, 
             collection, 
-            addDoc, 
+            addDoc,
+            doc,                    // NEW: Import doc
+            getDoc,                 // NEW: Import getDoc
             serverTimestamp, 
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- IMPORTANT: REGISTRATION SECRET ---
-        // !! CHANGE THIS VALUE to a strong, unique password !!
-        // This is the "secret key" users must enter to register.
-        const REGISTRATION_SECRET = "clacebu"; 
-        // Example: "MySuperSecretKey123!"
 
         // --- Firebase Config (UPDATED) ---
-        // This logic now checks for Netlify variables (VITE_) first,
-        // and falls back to Canvas variables (__).
         const configStr = typeof VITE_FIREBASE_CONFIG !== 'undefined'
             ? VITE_FIREBASE_CONFIG
             : (typeof __firebase_config !== 'undefined' ? __firebase_config : 'null');
@@ -164,7 +157,6 @@
             appId: "YOUR_APP_ID"
         };
         
-        // This logic now checks for Netlify variables (VITE_) first
         const appId = typeof VITE_APP_ID !== 'undefined'
             ? VITE_APP_ID
             : (typeof __app_id !== 'undefined' ? __app_id : 'default-app-id');
@@ -181,27 +173,22 @@
             setLogLevel('Debug');
         } catch (error) {
             console.error("Firebase initialization failed:", error);
-            // Display a user-friendly error on the page
             const loginContainer = document.getElementById('login-container');
             if (loginContainer) {
                 loginContainer.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Firebase. Please check your Netlify environment variables and re-deploy.</p>`;
             }
         }
         
+        // --- NEW: Google Provider ---
+        const googleProvider = new GoogleAuthProvider();
+
         // --- UI Elements ---
         const loginContainer = document.getElementById('login-container');
-        const registerContainer = document.getElementById('register-container'); // Added
         const adminContent = document.getElementById('admin-content');
-        
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
-        const registerForm = document.getElementById('register-form'); // Added
-        const registerError = document.getElementById('register-error'); // Added
-        const registerSuccess = document.getElementById('register-success'); // Added
-
-        const showRegisterLink = document.getElementById('show-register-link'); // Added
-        const showLoginLink = document.getElementById('show-login-link'); // Added
-        
+        const googleLoginButton = document.getElementById('google-login-button'); // NEW
+        const adminEmail = document.getElementById('admin-email'); // NEW
         const logoutButton = document.getElementById('logout-button');
         const addTalkForm = document.getElementById('add-talk-form');
         const formSuccess = document.getElementById('form-success');
@@ -209,42 +196,66 @@
         const submitTalkButton = document.getElementById('submit-talk-button');
         const uploadStatus = document.getElementById('upload-status');
 
-        // --- Form Toggle Logic ---
-        if (showRegisterLink) {
-            showRegisterLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                loginContainer.classList.add('hidden');
-                registerContainer.classList.remove('hidden');
-            });
-        }
-
-        if (showLoginLink) {
-            showLoginLink.addEventListener('click', (e) => {
-                e.preventDefault();
+        // --- NEW: Check Admin Whitelist ---
+        // This function checks if the logged-in user's email is in the 'admins' collection
+        async function checkAdminStatus(user) {
+            if (!user || user.isAnonymous) {
+                // Not a real user, show login
                 loginContainer.classList.remove('hidden');
-                registerContainer.classList.add('hidden');
-            });
+                adminContent.classList.add('hidden');
+                return;
+            }
+
+            loginError.textContent = 'Checking authorization...';
+            try {
+                // We use the user's email as the document ID in the 'admins' collection
+                const adminDocRef = doc(db, `admins/${user.email}`);
+                const adminDoc = await getDoc(adminDocRef);
+
+                if (adminDoc.exists()) {
+                    // SUCCESS: User is an admin
+                    console.log("Admin access granted for:", user.email);
+                    loginContainer.classList.add('hidden');
+                    adminContent.classList.remove('hidden');
+                    adminEmail.textContent = `Logged in as: ${user.email}`;
+                    loginError.textContent = '';
+                } else {
+                    // FAILURE: User is not an admin
+                    console.warn("Access denied for:", user.email);
+                    loginError.textContent = `Access Denied. ${user.email} is not an authorized admin.`;
+                    await signOut(auth); // Log them out immediately
+                }
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+                // *** UPDATED ERROR HANDLING HERE ***
+                if (error.code === 'permission-denied' || error.message.includes('permission')) {
+                    loginError.textContent = 'Permission Error. Please check your Firestore Security Rules for the "admins" collection.';
+                } else {
+                    loginError.textContent = 'Error checking admin status. Please try again.';
+                }
+                await signOut(auth);
+            }
         }
 
-        // --- Auth State Logic ---
+        // --- Auth State Logic (UPDATED) ---
         if (auth) {
             onAuthStateChanged(auth, async (user) => {
                 if (user && !user.isAnonymous) {
-                    // User is logged in
-                    loginContainer.classList.add('hidden');
-                    registerContainer.classList.add('hidden'); // Hide register form too
-                    adminContent.classList.remove('hidden');
+                    // User is logged in, check if they are an admin
+                    await checkAdminStatus(user);
                 } else {
                     // User is logged out or anonymous
-                    loginContainer.classList.remove('hidden'); // Show login form
+                    loginContainer.classList.remove('hidden');
                     adminContent.classList.add('hidden');
+                    adminEmail.textContent = '';
+                    loginError.textContent = ''; // Clear any old errors
                     
                     try {
+                        // Sign in to check connection
                         if (typeof __initial_auth_token !== 'undefined') {
                             await signInWithCustomToken(auth, __initial_auth_token);
                         } else if (auth.currentUser === null) { 
                             await signInAnonymously(auth);
-                            console.log("Signed in anonymously to check connection.");
                         }
                     } catch (error) {
                         console.error("Anonymous/Custom token sign-in failed:", error.message);
@@ -260,13 +271,13 @@
         if(loginForm) {
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                loginError.textContent = '';
+                loginError.textContent = 'Logging in...';
                 const email = loginForm['email'].value;
                 const password = loginForm['password'].value;
 
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
-                    // Auth state change will handle UI
+                    // onAuthStateChanged will handle the rest
                 } catch (error) {
                     console.error("Login failed:", error);
                     loginError.textContent = "Login failed. Please check your email and password.";
@@ -274,46 +285,19 @@
             });
         }
 
-        // --- Registration Form Submit ---
-        if (registerForm) {
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                registerError.textContent = '';
-                registerSuccess.textContent = '';
-
-                const email = registerForm['register-email'].value;
-                const password = registerForm['register-password'].value;
-                const confirmPassword = registerForm['confirm-password'].value;
-                const secret = registerForm['register-secret'].value;
-
-                // 1. Check Secret Key
-                if (secret !== REGISTRATION_SECRET) {
-                    registerError.textContent = 'Incorrect Registration Secret. Account not created.';
-                    return;
-                }
-
-                // 2. Check Passwords
-                if (password !== confirmPassword) {
-                    registerError.textContent = 'Passwords do not match.';
-                    return;
-                }
-
-                // 3. Create User
+        // --- NEW: Google Login Button ---
+        if (googleLoginButton) {
+            googleLoginButton.addEventListener('click', async () => {
+                loginError.textContent = 'Opening Google Sign-in...';
                 try {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    console.log('Successfully registered user:', userCredential.user.email);
-                    registerSuccess.textContent = 'Registration successful! You will be logged in automatically.';
-                    // Auth state change will automatically log them in and show admin panel.
-                    registerForm.reset();
-
+                    await signInWithPopup(auth, googleProvider);
+                    // onAuthStateChanged will handle the rest
                 } catch (error) {
-                    console.error("Registration failed:", error);
-                    if (error.code === 'auth/weak-password') {
-                        registerError.textContent = 'Password is too weak (must be at least 6 characters).';
-                    } else if (error.code === 'auth/email-already-in-use') {
-                        registerError.textContent = 'This email is already in use.';
+                    console.error("Google Sign-in failed:", error);
+                    if (error.code !== 'auth/popup-closed-by-user') {
+                        loginError.textContent = 'Google Sign-in failed. Please try again.';
                     } else {
-                        registerError.textContent = 'Registration failed. Please try again.';
+                        loginError.textContent = ''; // User closed popup, reset message
                     }
                 }
             });
@@ -324,14 +308,14 @@
             logoutButton.addEventListener('click', async () => {
                 try {
                     await signOut(auth);
-                    // Auth state change will handle UI and sign back in anonymously
+                    // onAuthStateChanged will handle UI
                 } catch (error) {
                     console.error("Logout failed:", error);
                 }
             });
         }
 
-        // --- Add Talk Form Submit ---
+        // --- Add Talk Form Submit (Unchanged) ---
         if(addTalkForm) {
             addTalkForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -375,5 +359,4 @@
     </script>
 </body>
 </html>
-
 
