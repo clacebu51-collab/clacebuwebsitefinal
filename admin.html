@@ -5,356 +5,294 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal | ChristLife Assemblies</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 1. Import Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; }
         .font-serif { font-family: 'Merriweather', serif; }
-        /* Simple Google Button Style */
-        .btn-google {
-            background-color: #4285F4;
-            color: white;
-            transition: background-color 0.3s;
-        }
-        .btn-google:hover {
-            background-color: #357ae8;
-        }
-        .btn-google img {
-            display: inline-block;
-            vertical-align: middle;
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            background-color: white;
-            padding: 2px;
-            border-radius: 50%;
-        }
+        .form-container { display: none; }
+        .admin-panel { display: none; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
-            <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management</p>
+    <div class="container mx-auto max-w-lg p-8">
+        
+        <!-- Loading Spinner -->
+        <div id="loading" class="text-center">
+            <i class="fas fa-spinner fa-spin text-4xl text-yellow-600"></i>
+            <p class="mt-4 text-gray-700">Connecting...</p>
         </div>
-    </header>
-
-    <main class="container mx-auto p-6">
 
         <!-- Login Form -->
-        <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
+        <div id="login-form" class="form-container bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-3xl font-bold font-serif text-center mb-6">Admin Portal Login</h2>
             
-            <!-- Google Sign-in Button -->
-            <button id="google-login-button" class="btn-google font-bold py-2 px-4 rounded-full w-full transition duration-300 flex items-center justify-center mb-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google icon" />
-                Sign in with Google
-            </button>
+            <div id="auth-error" class="hidden text-red-600 bg-red-100 border border-red-400 p-3 rounded-md mb-4"></div>
 
-            <div class="relative flex py-3 items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm">Or with email</span>
-                <div class="flex-grow border-t border-gray-300"></div>
+            <button id="google-login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition duration-300">
+                <i class="fab fa-google mr-2"></i> Sign in with Google
+            </button>
+            
+            <div class="my-6 flex items-center justify-center">
+                <span class="border-b w-1/3 lg:w-1/4"></span>
+                <span class="text-xs text-center text-gray-500 uppercase mx-3">Or</span>
+                <span class="border-b w-1/3 lg:w-1/4"></span>
             </div>
 
-            <form id="login-form">
+            <form id="email-login-form">
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                     <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
                 <div class="mb-6">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-                    <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login with Email</button>
-                <p id="login-error" class="text-red-500 text-sm italic mt-4 text-center"></p>
-                <!-- Registration link is removed for security -->
+                <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                    Sign In with Email
+                </button>
             </form>
         </div>
 
-        <!-- Admin Content (Hidden by default) -->
-        <div id="admin-content" class="hidden max-w-xl mx-auto">
+        <!-- Admin Panel (Shown after login) -->
+        <div id="admin-panel" class="admin-panel">
             <div class="bg-white p-8 rounded-lg shadow-md">
                 <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
-                        <p id="admin-email" class="text-sm text-gray-500"></p>
-                    </div>
-                    <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
+                    <h2 class="text-3xl font-bold font-serif">Admin Panel</h2>
+                    <button id="logout-btn" class="text-sm text-red-500 hover:text-red-700 font-semibold">
+                        Sign Out <i class="fas fa-sign-out-alt ml-1"></i>
+                    </button>
                 </div>
+                <p class="mb-2">Logged in as: <strong id="admin-email" class="font-mono">...</strong></p>
+                <p class="mb-6 text-green-700 font-semibold"><i class="fas fa-check-circle mr-1"></i> You are an authorized admin.</p>
+                
+                <hr class="my-6">
+                
+                <h3 class="text-2xl font-bold font-serif mb-4">Add a New Talk</h3>
+                <div id="add-talk-message" class="hidden p-3 rounded-md mb-4"></div>
+                
                 <form id="add-talk-form">
                     <div class="mb-4">
-                        <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title:</label>
-                        <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title</label>
+                        <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-4">
-                        <label for="speaker-name" class="block text-gray-700 text-sm font-bold mb-2">Speaker Name:</label>
-                        <input type="text" id="speaker-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="talk-speaker" class="block text-gray-700 text-sm font-bold mb-2">Speaker</label>
+                        <input type="text" id="talk-speaker" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-4">
-                        <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Talk Date:</label>
-                        <input type="date" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Date (e.g., August 31, 2025)</label>
+                        <input type="text" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-4">
-                        <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-                        <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+                        <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description (Optional)</label>
+                        <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"></textarea>
                     </div>
                     <div class="mb-4">
-                        <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
-                        <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="talk-gdrive" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link</label>
+                        <input type="url" id="talk-gdrive" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
                     <div class="mb-4">
-                        <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
-                        <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
+                        <label for="talk-cover" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL</label>
+                        <input type="url" id="talk-cover" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                     </div>
-                    <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
-                        Add Talk to Website
+                    
+                    <button type="submit" id="add-talk-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                        <span id="add-talk-text">Add Talk to Website</span>
+                        <i id="add-talk-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
                     </button>
-                    <!-- Status message -->
-                    <div id="upload-status" class="hidden text-center mt-4 text-blue-600"></div>
                 </form>
-                <p id="form-success" class="text-green-600 text-center mt-4"></p>
-                <p id="form-error" class="text-red-500 text-center mt-4"></p>
             </div>
         </div>
-    </main>
+    </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            signInWithEmailAndPassword,
-            GoogleAuthProvider,     // NEW: Import Google provider
-            signInWithPopup,        // NEW: Import Popup sign-in
-            signOut,
-            signInAnonymously,
-            signInWithCustomToken
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc,
-            doc,                    // NEW: Import doc
-            getDoc,                 // NEW: Import getDoc
-            serverTimestamp, 
-            setLogLevel 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-
-        // --- Firebase Config (UPDATED) ---
-        const configStr = typeof VITE_FIREBASE_CONFIG !== 'undefined'
-            ? VITE_FIREBASE_CONFIG
-            : (typeof __firebase_config !== 'undefined' ? __firebase_config : 'null');
-            
-        const firebaseConfig = JSON.parse(configStr) || {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        
-        const appId = typeof VITE_APP_ID !== 'undefined'
-            ? VITE_APP_ID
-            : (typeof __app_id !== 'undefined' ? __app_id : 'default-app-id');
-
-        // --- Initialize Firebase ---
-        let app;
-        let auth;
-        let db;
-
+        // 2. Initialize Supabase
+        let supabase = null;
         try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            setLogLevel('Debug');
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
-            const loginContainer = document.getElementById('login-container');
-            if (loginContainer) {
-                loginContainer.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Firebase. Please check your Netlify environment variables and re-deploy.</p>`;
+            // Use Netlify variables (VITE_)
+            const supabaseUrl = typeof VITE_SUPABASE_URL !== 'undefined'
+                ? VITE_SUPABASE_URL
+                : (typeof __app_id !== 'undefined' ? "https_preview_id.supabase.co" : "YOUR_SUPABASE_URL"); // Fallback for preview
+                
+            const supabaseAnonKey = typeof VITE_SUPABASE_ANON_KEY !== 'undefined'
+                ? VITE_SUPABASE_ANON_KEY
+                : (typeof __firebase_config !== 'undefined' ? "preview_key" : "YOUR_SUPABASE_ANON_KEY"); // Fallback for preview
+
+            if (supabaseUrl === "YOUR_SUPABASE_URL" || supabaseAnonKey === "YOUR_SUPABASE_ANON_KEY") {
+                throw new Error("Supabase environment variables not set. Please check your Netlify config.");
             }
+            
+            supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        } catch (error) {
+            console.error("Supabase init error:", error.message);
+            const loadingEl = document.getElementById('loading');
+            loadingEl.innerHTML = `<p class="text-red-600"><strong>Error:</strong> Could not connect to backend. Please check Netlify environment variables.</p>`;
+            return;
         }
-        
-        // --- NEW: Google Provider ---
-        const googleProvider = new GoogleAuthProvider();
 
         // --- UI Elements ---
-        const loginContainer = document.getElementById('login-container');
-        const adminContent = document.getElementById('admin-content');
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
-        const googleLoginButton = document.getElementById('google-login-button'); // NEW
-        const adminEmail = document.getElementById('admin-email'); // NEW
-        const logoutButton = document.getElementById('logout-button');
+        const loadingEl = document.getElementById('loading');
+        const loginFormEl = document.getElementById('login-form');
+        const adminPanelEl = document.getElementById('admin-panel');
+        const authErrorEl = document.getElementById('auth-error');
+        const adminEmailEl = document.getElementById('admin-email');
         const addTalkForm = document.getElementById('add-talk-form');
-        const formSuccess = document.getElementById('form-success');
-        const formError = document.getElementById('form-error');
-        const submitTalkButton = document.getElementById('submit-talk-button');
-        const uploadStatus = document.getElementById('upload-status');
+        const addTalkMessageEl = document.getElementById('add-talk-message');
+        const addTalkBtn = document.getElementById('add-talk-btn');
+        const addTalkText = document.getElementById('add-talk-text');
+        const addTalkSpinner = document.getElementById('add-talk-spinner');
 
-        // --- NEW: Check Admin Whitelist ---
-        // This function checks if the logged-in user's email is in the 'admins' collection
+        // --- Helper Functions ---
+        function showAuthError(message) {
+            authErrorEl.textContent = message;
+            authErrorEl.classList.remove('hidden');
+        }
+
+        function showTalkMessage(message, isSuccess = true) {
+            addTalkMessageEl.textContent = message;
+            addTalkMessageEl.className = `p-3 rounded-md mb-4 ${isSuccess ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}`;
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                addTalkText.textContent = "Adding...";
+                addTalkSpinner.classList.remove('hidden');
+                addTalkBtn.disabled = true;
+            } else {
+                addTalkText.textContent = "Add Talk to Website";
+                addTalkSpinner.classList.add('hidden');
+                addTalkBtn.disabled = false;
+            }
+        }
+
+        // --- Admin Check ---
         async function checkAdminStatus(user) {
-            if (!user || user.isAnonymous) {
-                // Not a real user, show login
-                loginContainer.classList.remove('hidden');
-                adminContent.classList.add('hidden');
-                return;
-            }
-
-            loginError.textContent = 'Checking authorization...';
             try {
-                // We use the user's email as the document ID in the 'admins' collection
-                const adminDocRef = doc(db, `admins/${user.email}`);
-                const adminDoc = await getDoc(adminDocRef);
+                // Check the 'admins' table to see if the user's email is on the whitelist.
+                const { data, error } = await supabase
+                    .from('admins')
+                    .select('email')
+                    .eq('email', user.email)
+                    .single(); // Get a single record
 
-                if (adminDoc.exists()) {
-                    // SUCCESS: User is an admin
-                    console.log("Admin access granted for:", user.email);
-                    loginContainer.classList.add('hidden');
-                    adminContent.classList.remove('hidden');
-                    adminEmail.textContent = `Logged in as: ${user.email}`;
-                    loginError.textContent = '';
-                } else {
-                    // FAILURE: User is not an admin
-                    console.warn("Access denied for:", user.email);
-                    loginError.textContent = `Access Denied. ${user.email} is not an authorized admin.`;
-                    await signOut(auth); // Log them out immediately
+                if (error) {
+                    if (error.code === 'PGRST116') {
+                        // "PGRST116" means "no rows returned"
+                        return false; // User is not in the admins table
+                    }
+                    throw error; // Throw other errors
                 }
+                
+                return !!data; // If data exists, they are an admin.
             } catch (error) {
-                console.error("Error checking admin status:", error);
-                // *** UPDATED ERROR HANDLING HERE ***
-                if (error.code === 'permission-denied' || error.message.includes('permission')) {
-                    loginError.textContent = 'Permission Error. Please check your Firestore Security Rules for the "admins" collection.';
-                } else {
-                    loginError.textContent = 'Error checking admin status. Please try again.';
-                }
-                await signOut(auth);
+                console.error('Error checking admin status:', error);
+                // This error (e.g., 404 table not found, or RLS policy violation) is a setup problem.
+                showAuthError(`Admin Check Failed: ${error.message}. Ensure 'admins' table and RLS policies are set up.`);
+                await supabase.auth.signOut();
+                return false;
             }
         }
 
-        // --- Auth State Logic (UPDATED) ---
-        if (auth) {
-            onAuthStateChanged(auth, async (user) => {
-                if (user && !user.isAnonymous) {
-                    // User is logged in, check if they are an admin
-                    await checkAdminStatus(user);
-                } else {
-                    // User is logged out or anonymous
-                    loginContainer.classList.remove('hidden');
-                    adminContent.classList.add('hidden');
-                    adminEmail.textContent = '';
-                    loginError.textContent = ''; // Clear any old errors
-                    
-                    try {
-                        // Sign in to check connection
-                        if (typeof __initial_auth_token !== 'undefined') {
-                            await signInWithCustomToken(auth, __initial_auth_token);
-                        } else if (auth.currentUser === null) { 
-                            await signInAnonymously(auth);
-                        }
-                    } catch (error) {
-                        console.error("Anonymous/Custom token sign-in failed:", error.message);
-                        if (error.code === 'auth/api-key-not-valid' && loginError) {
-                           loginError.textContent = "Auth Error: Invalid API Key. Check Netlify variables.";
-                        }
-                    }
-                }
-            });
+        // --- Auth Logic ---
+        async function handleLogin(user) {
+            const isAdmin = await checkAdminStatus(user);
+            
+            if (isAdmin) {
+                adminEmailEl.textContent = user.email;
+                loginFormEl.style.display = 'none';
+                adminPanelEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+            } else {
+                await supabase.auth.signOut();
+                showAuthError("Access Denied: Your account is not on the admin whitelist.");
+                loginFormEl.style.display = 'block';
+                adminPanelEl.style.display = 'none';
+                loadingEl.style.display = 'none';
+            }
         }
 
-        // --- Login Form Submit ---
-        if(loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                loginError.textContent = 'Logging in...';
-                const email = loginForm['email'].value;
-                const password = loginForm['password'].value;
-
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    // onAuthStateChanged will handle the rest
-                } catch (error) {
-                    console.error("Login failed:", error);
-                    loginError.textContent = "Login failed. Please check your email and password.";
-                }
+        // 1. Google Login
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            authErrorEl.classList.add('hidden');
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google'
             });
-        }
+            if (error) {
+                showAuthError(`Google Sign-in failed: ${error.message}`);
+            }
+        });
 
-        // --- NEW: Google Login Button ---
-        if (googleLoginButton) {
-            googleLoginButton.addEventListener('click', async () => {
-                loginError.textContent = 'Opening Google Sign-in...';
-                try {
-                    await signInWithPopup(auth, googleProvider);
-                    // onAuthStateChanged will handle the rest
-                } catch (error) {
-                    console.error("Google Sign-in failed:", error);
-                    if (error.code !== 'auth/popup-closed-by-user') {
-                        loginError.textContent = 'Google Sign-in failed. Please try again.';
-                    } else {
-                        loginError.textContent = ''; // User closed popup, reset message
-                    }
-                }
+        // 2. Email Login
+        document.getElementById('email-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            authErrorEl.classList.add('hidden');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
             });
-        }
 
-        // --- Logout Button ---
-        if(logoutButton) {
-            logoutButton.addEventListener('click', async () => {
-                try {
-                    await signOut(auth);
-                    // onAuthStateChanged will handle UI
-                } catch (error) {
-                    console.error("Logout failed:", error);
-                }
-            });
-        }
+            if (error) {
+                showAuthError(error.message);
+            } else if (data.user) {
+                // Don't show admin panel yet, wait for session listener
+                loadingEl.style.display = 'block';
+                loginFormEl.style.display = 'none';
+                // The onAuthStateChange listener will handle the admin check
+            }
+        });
 
-        // --- Add Talk Form Submit (Unchanged) ---
-        if(addTalkForm) {
-            addTalkForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                formSuccess.textContent = '';
-                formError.textContent = '';
-                submitTalkButton.disabled = true;
-                uploadStatus.textContent = 'Saving talk...';
-                uploadStatus.classList.remove('hidden');
+        // 3. Logout
+        document.getElementById('logout-btn').addEventListener('click', async ()_=> {
+            await supabase.auth.signOut();
+            // Listener will hide panel and show login
+        });
 
-                try {
-                    const coverPhotoURL = addTalkForm['cover-photo-url'].value || null;
-                    const talkData = {
-                        title: addTalkForm['talk-title'].value,
-                        speaker: addTalkForm['speaker-name'].value,
-                        date: addTalkForm['talk-date'].value,
-                        description: addTalkForm['talk-description'].value,
-                        gdrive_link: addTalkForm['gdrive-link'].value,
-                        coverPhotoURL: coverPhotoURL,
-                        createdAt: serverTimestamp()
-                    };
+        // --- Add Talk Logic ---
+        addTalkForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(true);
 
-                    const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/talks`), talkData);
-                    
-                    formSuccess.textContent = 'Talk added successfully!';
-                    addTalkForm.reset();
-                    console.log("Document written with ID: ", docRef.id);
-                    
-                    setTimeout(() => { formSuccess.textContent = ''; }, 3000);
+            const talk = {
+                title: document.getElementById('talk-title').value,
+                speaker: document.getElementById('talk-speaker').value,
+                date: document.getElementById('talk-date').value,
+                description: document.getElementById('talk-description').value,
+                gdrive_link: document.getElementById('talk-gdrive').value,
+                cover_photo_url: document.getElementById('talk-cover').value,
+                // created_at is set by default in Supabase table
+            };
 
-                } catch (error) {
-                    console.error("Error adding document: ", error);
-                    formError.textContent = 'Error adding talk. Please try again.';
-                } finally {
-                    submitTalkButton.disabled = false;
-                    uploadStatus.classList.add('hidden');
-                    uploadStatus.textContent = '';
-                }
-            });
-        }
+            const { error } = await supabase.from('talks').insert(talk);
+
+            if (error) {
+                showTalkMessage(`Error: ${error.message}`, false);
+            } else {
+                showTalkMessage('Success! The new talk has been added to the website.', true);
+                addTalkForm.reset();
+            }
+            setLoading(false);
+        });
+
+        // --- Session Management ---
+        // This is the main function that runs on page load and on login/logout
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                // User is logged in
+                handleLogin(session.user);
+            } else {
+                // User is logged out
+                loginFormEl.style.display = 'block';
+                adminPanelEl.style.display = 'none';
+                loadingEl.style.display = 'none';
+            }
+        });
 
     </script>
 </body>
