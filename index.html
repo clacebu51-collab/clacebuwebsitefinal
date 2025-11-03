@@ -36,6 +36,22 @@
             transform: scale(1.05);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Added for dynamically loaded cards to have consistent height */
+        .talk-card-image {
+            height: 12rem; /* 192px */
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 0.5rem; /* rounded-lg */
+            border-top-right-radius: 0.5rem; /* rounded-lg */
+        }
+        .talk-card-description {
+            /* Set a fixed height and hide overflow */
+            height: 4.5rem; /* 3 lines of text */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -53,8 +69,6 @@
                 <a href="#events" class="nav-link text-gray-600 border-b-2 border-transparent">Events</a>
                 <a href="#gallery" class="nav-link text-gray-600 border-b-2 border-transparent">Gallery</a>
                 <a href="#contact" class="nav-link text-gray-600 border-b-2 border-transparent">Contact</a>
-                 <!-- Link to Activities Portal -->
-                
             </div>
             <button id="mobile-menu-button" class="md:hidden focus:outline-none">
                 <i class="fas fa-bars text-2xl"></i>
@@ -67,8 +81,6 @@
             <a href="#events" class="block py-2 px-4 text-sm hover:bg-gray-100">Events</a>
             <a href="#gallery" class="block py-2 px-4 text-sm hover:bg-gray-100">Gallery</a>
             <a href="#contact" class="block py-2 px-4 text-sm hover:bg-gray-100">Contact</a>
-             <!-- Link for Mobile -->
-            
         </div>
     </header>
 
@@ -78,7 +90,6 @@
             <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">Join us in worship and fellowship here in the heart of Cebu City.</p>
             <div>
                 <a href="#contact" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 inline-block mb-4 md:mb-0 md:mr-4">Plan Your Visit</a>
-                <!-- Button to Activities Portal -->
             </div>
         </div>
     </section>
@@ -106,50 +117,42 @@
         <div class="container mx-auto px-6 text-center">
              <h2 class="text-3xl font-bold font-serif mb-6">Join Us for Worship</h2>
              <div class="flex flex-col md:flex-row justify-center items-center gap-8">
-                   <div class="bg-gray-700 p-6 rounded-lg">
+                  <div class="bg-gray-700 p-6 rounded-lg">
                        <h3 class="text-xl font-bold text-yellow-400">Sunday Worship Service</h3>
                        <p class="mt-2">Every Sunday at 1:00 PM</p>
-                   </div>
-                   <div class="bg-gray-700 p-6 rounded-lg">
+                  </div>
+                  <div class="bg-gray-700 p-6 rounded-lg">
                        <h3 class="text-xl font-bold text-yellow-400">Mid-Week Meeting</h3>
                        <p class="mt-2">Every Thursday at 6:30 PM</p>
-                   </div>
+                  </div>
              </div>
         </div>
     </section>
 
+    <!-- ### DYNAMIC RECENT TALKS SECTION ### -->
     <section id="sermons" class="py-20">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold font-serif text-gray-800">Recent Talks</h2>
                 <p class="text-gray-600 mt-2">Listen to messages of inspiration and truth.</p>
             </div>
-            <!-- Corrected Grid Container -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Talk 1 -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 font-serif">The Principle of Tithes</h3>
-                    <p class="text-gray-500 text-sm mb-4">Bro Jason | August 24, 2025</p>
-                    <a href="https://drive.google.com/file/d/1gC1-avzCw6BGO1qeD5NPO-m9OcYm5cW3/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-700 font-semibold">Listen Now <i class="fas fa-arrow-right ml-1"></i></a>
+            
+            <!-- Dynamic Grid Container -->
+            <div id="recent-talks-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Loading Spinner -->
+                <div id="recent-talks-loading" class="text-center col-span-1 md:col-span-2 lg:col-span-3 py-8">
+                    <i class="fas fa-spinner animate-spin text-yellow-500 text-4xl"></i>
+                    <p class="mt-2 text-gray-600">Loading recent talks...</p>
                 </div>
-                <!-- Talk 2 -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 font-serif">Loss to Restoration</h3>
-                    <p class="text-gray-500 text-sm mb-4">Bro Simon | August 17, 2025</p>
-                    <a href="https://drive.google.com/file/d/1KFa3gdKQXGZwkxsbN0geXuOPYXXLWuSr/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-700 font-semibold">Listen Now <i class="fas fa-arrow-right ml-1"></i></a>
-                </div>
-                <!-- Talk 3 -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 font-serif">Spirit of the Antichrist...</h3>
-                    <p class="text-gray-500 text-sm mb-4">Sis Shiela | August 10, 2025</p>
-                    <a href="https://drive.google.com/file/d/171yA3F8zuHACDaZp9vmbFZmAkLH2OmEX/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-700 font-semibold">Listen Now <i class="fas fa-arrow-right ml-1"></i></a>
-                </div>
+                <!-- Talks will be injected here by JavaScript -->
             </div>
+            
             <div class="mt-12 text-center">
                  <a href="talks.html" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300">View All Talks</a>
             </div>
         </div>
     </section>
+    <!-- ### END DYNAMIC SECTION ### -->
 
     <section id="events" class="py-20 bg-white">
         <div class="container mx-auto px-6">
@@ -300,8 +303,146 @@
         });
     </script>
 
+    <!-- ### NEW SCRIPT FOR FIREBASE ### -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs, 
+            query, 
+            orderBy, 
+            limit, 
+            setLogLevel 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Config ---
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null') || {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // --- Initialize Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        setLogLevel('Debug');
+
+        // --- UI Elements ---
+        const recentTalksList = document.getElementById('recent-talks-list');
+        const recentTalksLoading = document.getElementById('recent-talks-loading');
+
+        // --- Helper Function to format date ---
+        function formatTalkDate(dateString) {
+            if (!dateString) return 'Undated';
+            try {
+                // Add T00:00:00 to ensure date is parsed in local timezone, not UTC
+                const date = new Date(dateString + 'T00:00:00');
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                console.warn("Could not parse date:", dateString);
+                return dateString;
+            }
+        }
+
+        // --- Fetch and Render Recent Talks ---
+        async function fetchRecentTalks() {
+            try {
+                const talksCollectionRef = collection(db, `artifacts/${appId}/public/data/talks`);
+                // Query for the 3 most recent talks, ordered by 'createdAt' timestamp descending
+                const q = query(talksCollectionRef, orderBy('createdAt', 'desc'), limit(3));
+                const querySnapshot = await getDocs(q);
+
+                const talks = [];
+                querySnapshot.forEach((doc) => {
+                    talks.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Clear loading spinner
+                recentTalksList.innerHTML = '';
+
+                if (talks.length === 0) {
+                    recentTalksList.innerHTML = '<p class="text-center text-gray-600 col-span-1 md:col-span-2 lg:col-span-3">No recent talks found. Please check back later.</p>';
+                    return;
+                }
+
+                // Render talks
+                talks.forEach(talk => {
+                    const talkCard = document.createElement('div');
+                    // Removed p-6, added shadow-lg and rounded-lg
+                    talkCard.className = 'bg-white rounded-lg shadow-lg flex flex-col';
+                    
+                    const formattedDate = formatTalkDate(talk.date);
+                    const title = talk.title || 'Untitled Talk';
+                    
+                    // Use coverPhotoURL if it exists, otherwise use a placeholder
+                    const imageURL = talk.coverPhotoURL || `https://placehold.co/600x400/d69e2e/ffffff?text=${encodeURIComponent(title.split(' ').slice(0,3).join(' '))}`;
+
+                    // Truncate description for the homepage
+                    let description = talk.description || 'No description available.';
+
+                    // Truncate title for the homepage
+                    let truncatedTitle = title;
+                    if (title.length > 50) {
+                        truncatedTitle = title.substring(0, 50) + '...';
+                    }
+
+                    talkCard.innerHTML = `
+                        <img src="${imageURL}" alt="${title}" class="talk-card-image">
+                        <div class="p-6 flex-grow flex flex-col">
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-xl mb-2 font-serif" title="${talk.title}">${truncatedTitle}</h3>
+                                <p class="text-gray-500 text-sm mb-4">${talk.speaker || 'Unknown Speaker'} | ${formattedDate}</p>
+                                <p class="text-gray-700 mb-4 talk-card-description">${description}</p>
+                            </div>
+                            <a href="${talk.gdrive_link}" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-700 font-semibold mt-auto">
+                                Listen Now <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    `;
+                    recentTalksList.appendChild(talkCard);
+                });
+
+            } catch (error)
+            {
+                console.error("Error fetching recent talks: ", error);
+                recentTalksLoading.innerHTML = '<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error loading talks. Please refresh the page.</p>';
+            }
+        }
+
+        // --- Initial Load ---
+        (async () => {
+            // Sign in anonymously or with token to access Firestore
+            try {
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth failed:", error);
+            }
+            
+            // Fetch talks after auth
+            fetchRecentTalks();
+        })();
+    </script>
+
 </body>
 </html>
-
-
 
