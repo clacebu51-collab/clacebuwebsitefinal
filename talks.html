@@ -145,8 +145,13 @@
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Firebase Config ---
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null') || {
+        // --- Firebase Config (UPDATED) ---
+        // Check for Canvas-injected variables first
+        const configStr = typeof __firebase_config !== 'undefined' 
+            ? __firebase_config 
+            : (typeof VITE_FIREBASE_CONFIG !== 'undefined' ? VITE_FIREBASE_CONFIG : 'null');
+            
+        const firebaseConfig = JSON.parse(configStr) || {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
             projectId: "YOUR_PROJECT_ID",
@@ -155,7 +160,10 @@
             appId: "YOUR_APP_ID"
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Check for Canvas-injected app ID first
+        const appId = typeof __app_id !== 'undefined' 
+            ? __app_id 
+            : (typeof VITE_APP_ID !== 'undefined' ? VITE_APP_ID : 'default-app-id');
 
         // --- Initialize Firebase ---
         const app = initializeApp(firebaseConfig);
@@ -260,4 +268,5 @@
 
 </body>
 </html>
+
 
