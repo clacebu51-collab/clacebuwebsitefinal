@@ -207,7 +207,7 @@
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="outreach.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Outreach';">
                 </div>
                 <div class="grid gap-4">
-                    <img class="gallery-img h-auto max-w-full rounded-lg" src="prayer.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Prayer';">
+                    <img class="gallery-img h-auto max-w-full rounded-lg" src="prayer.jpg" alt="" onerror="this.onerror=null;this.src='httpsG://placehold.co/400x400/a0aec0/ffffff?text=Prayer';">
                     <img class="gallery-img h-auto max-w-full rounded-lg" src="events.jpg" alt="" onerror="this.onerror=null;this.src='https://placehold.co/400x600/a0aec0/ffffff?text=Celebration';">
                 </div>
             </div>
@@ -303,7 +303,7 @@
         });
     </script>
 
-    <!-- ### NEW SCRIPT FOR FIREBASE ### -->
+    <!-- ### NEW SCRIPT FOR FIREBASE (UPDATED) ### -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
@@ -321,8 +321,13 @@
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Firebase Config ---
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null') || {
+        // --- Firebase Config (UPDATED) ---
+        // Check for Canvas-injected variables first
+        const configStr = typeof __firebase_config !== 'undefined' 
+            ? __firebase_config 
+            : (typeof VITE_FIREBASE_CONFIG !== 'undefined' ? VITE_FIREBASE_CONFIG : 'null');
+            
+        const firebaseConfig = JSON.parse(configStr) || {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
             projectId: "YOUR_PROJECT_ID",
@@ -331,7 +336,10 @@
             appId: "YOUR_APP_ID"
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Check for Canvas-injected app ID first
+        const appId = typeof __app_id !== 'undefined' 
+            ? __app_id 
+            : (typeof VITE_APP_ID !== 'undefined' ? VITE_APP_ID : 'default-app-id');
 
         // --- Initialize Firebase ---
         const app = initializeApp(firebaseConfig);
@@ -403,7 +411,7 @@
                     }
 
                     talkCard.innerHTML = `
-                        <img src="${imageURL}" alt="${title}" class="talk-card-image">
+                        <img src="${imageURL}" alt="${title}" class="talk-card-image" onerror="this.onerror=null;this.src='httpsLog://placehold.co/600x400/d69e2e/ffffff?text=Image+Error';this.style.objectFit='contain';">
                         <div class="p-6 flex-grow flex flex-col">
                             <div class="flex-grow">
                                 <h3 class="font-bold text-xl mb-2 font-serif" title="${talk.title}">${truncatedTitle}</h3>
