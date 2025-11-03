@@ -67,13 +67,11 @@
                         <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
                         <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                     </div>
-                    <!-- MODIFIED COVER PHOTO FIELD -->
                     <div class="mb-4">
                         <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
                         <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
                     </div>
-                    <!-- END MODIFIED FIELD -->
                     <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
                         Add Talk to Website
                     </button>
@@ -103,10 +101,14 @@
             serverTimestamp, 
             setLogLevel 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // REMOVED STORAGE IMPORTS
 
-        // --- Firebase Config ---
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : 'null') || {
+        // --- Firebase Config (UPDATED) ---
+        // Check for Canvas-injected variables first
+        const configStr = typeof __firebase_config !== 'undefined' 
+            ? __firebase_config 
+            : (typeof VITE_FIREBASE_CONFIG !== 'undefined' ? VITE_FIREBASE_CONFIG : 'null');
+            
+        const firebaseConfig = JSON.parse(configStr) || {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
             projectId: "YOUR_PROJECT_ID",
@@ -115,13 +117,15 @@
             appId: "YOUR_APP_ID"
         };
         
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Check for Canvas-injected app ID first
+        const appId = typeof __app_id !== 'undefined' 
+            ? __app_id 
+            : (typeof VITE_APP_ID !== 'undefined' ? VITE_APP_ID : 'default-app-id');
 
         // --- Initialize Firebase ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        // REMOVED getStorage()
         setLogLevel('Debug');
 
         // --- UI Elements ---
@@ -135,7 +139,6 @@
         const formError = document.getElementById('form-error');
         const submitTalkButton = document.getElementById('submit-talk-button');
         const uploadStatus = document.getElementById('upload-status');
-        // REMOVED coverPhotoInput
 
         // --- Auth State Logic ---
         onAuthStateChanged(auth, async (user) => {
@@ -150,13 +153,19 @@
                 
                 // Try to sign in with custom token if available, otherwise anonymously
                 try {
+                    // This is the auth token provided by the preview environment
                     if (typeof __initial_auth_token !== 'undefined') {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
+                        // Fallback for live site or if no token is provided
                         await signInAnonymously(auth);
                     }
                 } catch (error) {
-                    console.error("Anonymous sign-in failed:", error);
+                    // This error is expected on the live site
+                    console.error("Anonymous/Custom token sign-in failed:", error.message);
+                    if (error.code === 'auth/api-key-not-valid') {
+                        console.warn("Auth Error: This is normal if API key is not set for anonymous login.");
+                    }
                 }
             }
         });
@@ -187,13 +196,13 @@
             }
         });
 
-        // --- Add Talk Form Submit (UPDATED) ---
+        // --- Add Talk Form Submit ---
         addTalkForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             formSuccess.textContent = '';
             formError.textContent = '';
             submitTalkButton.disabled = true;
-            uploadStatus.textContent = 'Saving talk...'; // Changed status message
+            uploadStatus.textContent = 'Saving talk...';
             uploadStatus.classList.remove('hidden');
 
             try {
