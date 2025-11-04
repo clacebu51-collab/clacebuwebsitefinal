@@ -1,24 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Portal (Supabase) | ChristLife Assemblies</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal | ChristLife Assemblies</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: 'Montserrat', sans-serif; }
     .font-serif { font-family: 'Merriweather', serif; }
-    .btn-google {
-      background-color: #4285F4; color: white; transition: background-color 0.3s;
-    }
-    .btn-google:hover { background-color: #357ae8; }
-    .btn-google img {
-      display: inline-block; vertical-align: middle;
-      width: 20px; height: 20px; margin-right: 12px;
-      background-color: white; padding: 2px; border-radius: 50%;
-    }
+    .btn-main { background-color: #facc15; color: white; font-weight: bold; }
+    .btn-main:hover { background-color: #eab308; }
+    .link { color: #2563eb; cursor: pointer; }
+    .link:hover { text-decoration: underline; }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -26,125 +20,197 @@
   <header class="bg-white shadow-md">
     <div class="container mx-auto px-6 py-4">
       <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
-      <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management (Supabase)</p>
+      <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management</p>
     </div>
   </header>
 
   <main class="container mx-auto p-6">
 
-    <!-- Loading / Initializing Screen -->
-    <div id="loading-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md text-center">
-      <h2 class="text-2xl font-bold font-serif mb-6 text-center">Connecting...</h2>
-      <p id="loading-message" class="text-gray-600">Initializing connection to the database...</p>
-    </div>
-
     <!-- Login Form -->
-    <div id="login-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
-      <button id="google-login-button" class="btn-google font-bold py-2 px-4 rounded-full w-full transition duration-300 flex items-center justify-center mb-4">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google icon" />
-        Sign in with Google
-      </button>
-
-      <div class="relative flex py-3 items-center">
-        <div class="flex-grow border-t border-gray-300"></div>
-        <span class="flex-shrink mx-4 text-gray-500 text-sm">Or with email</span>
-        <div class="flex-grow border-t border-gray-300"></div>
-      </div>
-
       <form id="login-form">
         <div class="mb-4">
-          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-          <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          <label class="block text-sm font-bold mb-2">Email:</label>
+          <input type="email" id="login-email" class="border rounded w-full py-2 px-3" required />
         </div>
         <div class="mb-6">
-          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-          <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          <label class="block text-sm font-bold mb-2">Password:</label>
+          <input type="password" id="login-password" class="border rounded w-full py-2 px-3" required />
         </div>
-        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login with Email</button>
-        <p id="login-error" class="text-red-500 text-sm italic mt-4 text-center"></p>
+        <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Login</button>
+      </form>
+      <p id="login-error" class="text-red-500 text-center mt-4"></p>
+      <p class="text-center text-sm mt-4">Don't have an account? 
+        <span id="show-register" class="link">Register</span>
+      </p>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="register-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+      <h2 class="text-2xl font-bold font-serif mb-6 text-center">Register</h2>
+      <form id="register-form">
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Email:</label>
+          <input type="email" id="register-email" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Password:</label>
+          <input type="password" id="register-password" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <div class="mb-6">
+          <label class="block text-sm font-bold mb-2">Confirm Password:</label>
+          <input type="password" id="register-confirm" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Create Account</button>
+      </form>
+      <p id="register-error" class="text-red-500 text-center mt-4"></p>
+      <p id="register-success" class="text-green-600 text-center mt-4"></p>
+      <p class="text-center text-sm mt-4">Already have an account? 
+        <span id="show-login" class="link">Login</span>
+      </p>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-content" class="hidden max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+          <p id="admin-email" class="text-sm text-gray-500"></p>
+        </div>
+        <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full">Logout</button>
+      </div>
+
+      <form id="add-talk-form">
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Talk Title:</label>
+          <input type="text" id="talk-title" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Speaker Name:</label>
+          <input type="text" id="speaker-name" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Talk Date:</label>
+          <input type="date" id="talk-date" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Description:</label>
+          <textarea id="talk-description" rows="3" class="border rounded w-full py-2 px-3" required></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Google Drive Link:</label>
+          <input type="url" id="gdrive-link" class="border rounded w-full py-2 px-3" required />
+        </div>
+        <button type="submit" class="btn-main py-2 px-4 rounded-full w-full">Add Talk</button>
+        <p id="form-success" class="text-green-600 text-center mt-4"></p>
+        <p id="form-error" class="text-red-500 text-center mt-4"></p>
       </form>
     </div>
 
-    <!-- Admin Content -->
-    <div id="admin-content" class="hidden max-w-xl mx-auto">
-      <div class="bg-white p-8 rounded-lg shadow-md">
-        <div class="flex justify-between items-center mb-6">
-          <div>
-            <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
-            <p id="admin-email" class="text-sm text-gray-500"></p>
-          </div>
-          <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
-        </div>
-        <form id="add-talk-form">
-          <div class="mb-4">
-            <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title:</label>
-            <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-          </div>
-          <div class="mb-4">
-            <label for="speaker-name" class="block text-gray-700 text-sm font-bold mb-2">Speaker Name:</label>
-            <input type="text" id="speaker-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-          </div>
-          <div class="mb-4">
-            <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Talk Date:</label>
-            <input type="date" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-          </div>
-          <div class="mb-4">
-            <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-            <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
-          </div>
-          <div class="mb-4">
-            <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
-            <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-          </div>
-          <div class="mb-4">
-            <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
-            <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
-          </div>
-          <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
-            Add Talk to Website
-          </button>
-          <div id="upload-status" class="hidden text-center mt-4 text-blue-600"></div>
-        </form>
-        <p id="form-success" class="text-green-600 text-center mt-4"></p>
-        <p id="form-error" class="text-red-500 text-center mt-4"></p>
-      </div>
-    </div>
   </main>
 
   <script type="module">
-    // ✅ Supabase credentials (inserted)
     const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA"; // ⬅️ Paste your real anon key here
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const loadingContainer = document.getElementById('loading-container');
-    const loadingMessage = document.getElementById('loading-message');
     const loginContainer = document.getElementById('login-container');
+    const registerContainer = document.getElementById('register-container');
     const adminContent = document.getElementById('admin-content');
-    const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const googleLoginButton = document.getElementById('google-login-button');
     const adminEmail = document.getElementById('admin-email');
-    const logoutButton = document.getElementById('logout-button');
-    const addTalkForm = document.getElementById('add-talk-form');
-    const formSuccess = document.getElementById('form-success');
-    const formError = document.getElementById('form-error');
-    const submitTalkButton = document.getElementById('submit-talk-button');
-    const uploadStatus = document.getElementById('upload-status');
 
-    let supabase;
-    try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      console.log("✅ Supabase client initialized");
-      loadingContainer.classList.add('hidden');
+    const showRegister = document.getElementById('show-register');
+    const showLogin = document.getElementById('show-login');
+
+    // Switch between login/register
+    showRegister.addEventListener('click', () => {
+      loginContainer.classList.add('hidden');
+      registerContainer.classList.remove('hidden');
+    });
+    showLogin.addEventListener('click', () => {
+      registerContainer.classList.add('hidden');
       loginContainer.classList.remove('hidden');
-    } catch (error) {
-      console.error("Supabase initialization failed:", error);
-      loadingMessage.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Supabase.<br>${error.message}</p>`;
-    }
+    });
 
-    // (Keep all your existing auth, admin, and form logic the same)
+    // Login
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const loginError = document.getElementById('login-error');
+      if (error) {
+        loginError.textContent = error.message;
+      } else {
+        loginError.textContent = '';
+      }
+    });
+
+    // Register
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      const registerError = document.getElementById('register-error');
+      const registerSuccess = document.getElementById('register-success');
+
+      if (password !== confirm) {
+        registerError.textContent = "Passwords do not match.";
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        registerError.textContent = error.message;
+        registerSuccess.textContent = '';
+      } else {
+        registerError.textContent = '';
+        registerSuccess.textContent = "Account created! You can now log in.";
+      }
+    });
+
+    // Auth listener
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        loginContainer.classList.add('hidden');
+        registerContainer.classList.add('hidden');
+        adminContent.classList.remove('hidden');
+        adminEmail.textContent = `Logged in as: ${session.user.email}`;
+      } else {
+        loginContainer.classList.remove('hidden');
+        adminContent.classList.add('hidden');
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-button').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+    });
+
+    // Add Talk
+    document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const talkData = {
+        title: document.getElementById('talk-title').value,
+        speaker: document.getElementById('speaker-name').value,
+        date: document.getElementById('talk-date').value,
+        description: document.getElementById('talk-description').value,
+        gdrive_link: document.getElementById('gdrive-link').value,
+      };
+      const { error } = await supabase.from('talks').insert(talkData);
+      const success = document.getElementById('form-success');
+      const fail = document.getElementById('form-error');
+      if (error) {
+        fail.textContent = error.message;
+        success.textContent = '';
+      } else {
+        success.textContent = 'Talk added successfully!';
+        fail.textContent = '';
+        e.target.reset();
+      }
+    });
   </script>
 </body>
 </html>
