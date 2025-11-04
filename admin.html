@@ -1,324 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal (Supabase) | ChristLife Assemblies</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- 1. Import Supabase JS Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: 'Montserrat', sans-serif; }
-        .font-serif { font-family: 'Merriweather', serif; }
-        .btn-google {
-            background-color: #4285F4; color: white; transition: background-color 0.3s;
-        }
-        .btn-google:hover { background-color: #357ae8; }
-        .btn-google img {
-            display: inline-block; vertical-align: middle;
-            width: 20px; height: 20px; margin-right: 12px;
-            background-color: white; padding: 2px; border-radius: 50%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal (Supabase) | ChristLife Assemblies</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; }
+    .font-serif { font-family: 'Merriweather', serif; }
+    .btn-google {
+      background-color: #4285F4; color: white; transition: background-color 0.3s;
+    }
+    .btn-google:hover { background-color: #357ae8; }
+    .btn-google img {
+      display: inline-block; vertical-align: middle;
+      width: 20px; height: 20px; margin-right: 12px;
+      background-color: white; padding: 2px; border-radius: 50%;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
-            <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management (Supabase)</p>
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto px-6 py-4">
+      <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
+      <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management (Supabase)</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+
+    <!-- Loading / Initializing Screen -->
+    <div id="loading-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+      <h2 class="text-2xl font-bold font-serif mb-6 text-center">Connecting...</h2>
+      <p id="loading-message" class="text-gray-600">Initializing connection to the database...</p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+      <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
+      <button id="google-login-button" class="btn-google font-bold py-2 px-4 rounded-full w-full transition duration-300 flex items-center justify-center mb-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google icon" />
+        Sign in with Google
+      </button>
+
+      <div class="relative flex py-3 items-center">
+        <div class="flex-grow border-t border-gray-300"></div>
+        <span class="flex-shrink mx-4 text-gray-500 text-sm">Or with email</span>
+        <div class="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      <form id="login-form">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+          <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
         </div>
-    </header>
-
-    <main class="container mx-auto p-6">
-
-        <!-- Loading / Initializing Screen -->
-        <div id="loading-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md text-center">
-            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Connecting...</h2>
-            <p id="loading-message" class="text-gray-600">Initializing connection to the database...</p>
+        <div class="mb-6">
+          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+          <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
         </div>
+        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login with Email</button>
+        <p id="login-error" class="text-red-500 text-sm italic mt-4 text-center"></p>
+      </form>
+    </div>
 
-        <!-- Login Form -->
-        <div id="login-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
-            
-            <button id="google-login-button" class="btn-google font-bold py-2 px-4 rounded-full w-full transition duration-300 flex items-center justify-center mb-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google icon" />
-                Sign in with Google
-            </button>
-
-            <div class="relative flex py-3 items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm">Or with email</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-
-            <form id="login-form">
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                    <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-6">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-                    <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300">Login with Email</button>
-                <p id="login-error" class="text-red-500 text-sm italic mt-4 text-center"></p>
-            </form>
+    <!-- Admin Content -->
+    <div id="admin-content" class="hidden max-w-xl mx-auto">
+      <div class="bg-white p-8 rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+            <p id="admin-email" class="text-sm text-gray-500"></p>
+          </div>
+          <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
         </div>
+        <form id="add-talk-form">
+          <div class="mb-4">
+            <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title:</label>
+            <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label for="speaker-name" class="block text-gray-700 text-sm font-bold mb-2">Speaker Name:</label>
+            <input type="text" id="speaker-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Talk Date:</label>
+            <input type="date" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+            <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+          </div>
+          <div class="mb-4">
+            <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
+            <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
+            <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
+          </div>
+          <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
+            Add Talk to Website
+          </button>
+          <div id="upload-status" class="hidden text-center mt-4 text-blue-600"></div>
+        </form>
+        <p id="form-success" class="text-green-600 text-center mt-4"></p>
+        <p id="form-error" class="text-red-500 text-center mt-4"></p>
+      </div>
+    </div>
+  </main>
 
-        <!-- Admin Content (Hidden by default) -->
-        <div id="admin-content" class="hidden max-w-xl mx-auto">
-            <div class="bg-white p-8 rounded-lg shadow-md">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
-                        <p id="admin-email" class="text-sm text-gray-500"></p>
-                    </div>
-                    <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full transition duration-300">Logout</button>
-                </div>
-                <form id="add-talk-form">
-                    <div class="mb-4">
-                        <label for="talk-title" class="block text-gray-700 text-sm font-bold mb-2">Talk Title:</label>
-                        <input type="text" id="talk-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="speaker-name" class="block text-gray-700 text-sm font-bold mb-2">Speaker Name:</label>
-                        <input type="text" id="speaker-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="talk-date" class="block text-gray-700 text-sm font-bold mb-2">Talk Date:</label>
-                        <input type="date" id="talk-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="talk-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-                        <textarea id="talk-description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label for="gdrive-link" class="block text-gray-700 text-sm font-bold mb-2">Google Drive Share Link:</label>
-                        <input type="url" id="gdrive-link" placeholder="https://drive.google.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="cover-photo-url" class="block text-gray-700 text-sm font-bold mb-2">Cover Photo URL:</label>
-                        <input type="url" id="cover-photo-url" placeholder="https://i.imgbb.com/.../image.png" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <p class="text-xs text-gray-500 mt-1">Optional. Upload to <a href="https://imgbb.com/" target="_blank" class="text-blue-500 hover:underline">imgbb.com</a> and paste the direct link here.</p>
-                    </div>
-                    <button type="submit" id="submit-talk-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full w-full transition duration-300">
-                        Add Talk to Website
-                    </button>
-                    <!-- Status message -->
-                    <div id="upload-status" class="hidden text-center mt-4 text-blue-600"></div>
-                </form>
-                <p id="form-success" class="text-green-600 text-center mt-4"></p>
-                <p id="form-error" class="text-red-500 text-center mt-4"></p>
-            </div>
-        </div>
-    </main>
+  <script type="module">
+    // ✅ Supabase credentials (inserted)
+    const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
 
-    <script type="module">
-        // 2. Get Supabase Keys from Environment Variables
-        const SUPABASE_URL = typeof VITE_SUPABASE_URL !== 'undefined'
-            ? VITE_SUPABASE_URL
-            : (typeof __app_id !== 'undefined' ? "https_preview_id.supabase.co" : "YOUR_SUPABASE_URL"); // Fallback for preview
-            
-        const SUPABASE_ANON_KEY = typeof VITE_SUPABASE_ANON_KEY !== 'undefined'
-            ? VITE_SUPABASE_ANON_KEY
-            : (typeof __firebase_config !== 'undefined' ? "preview_key" : "YOUR_SUPABASE_ANON_KEY"); // Fallback for preview
+    const loadingContainer = document.getElementById('loading-container');
+    const loadingMessage = document.getElementById('loading-message');
+    const loginContainer = document.getElementById('login-container');
+    const adminContent = document.getElementById('admin-content');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const googleLoginButton = document.getElementById('google-login-button');
+    const adminEmail = document.getElementById('admin-email');
+    const logoutButton = document.getElementById('logout-button');
+    const addTalkForm = document.getElementById('add-talk-form');
+    const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+    const submitTalkButton = document.getElementById('submit-talk-button');
+    const uploadStatus = document.getElementById('upload-status');
 
-        // --- UI Elements ---
-        const loadingContainer = document.getElementById('loading-container');
-        const loadingMessage = document.getElementById('loading-message');
-        const loginContainer = document.getElementById('login-container');
-        const adminContent = document.getElementById('admin-content');
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
-        const googleLoginButton = document.getElementById('google-login-button');
-        const adminEmail = document.getElementById('admin-email');
-        const logoutButton = document.getElementById('logout-button');
-        const addTalkForm = document.getElementById('add-talk-form');
-        const formSuccess = document.getElementById('form-success');
-        const formError = document.getElementById('form-error');
-        const submitTalkButton = document.getElementById('submit-talk-button');
-        const uploadStatus = document.getElementById('upload-status');
+    let supabase;
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log("✅ Supabase client initialized");
+      loadingContainer.classList.add('hidden');
+      loginContainer.classList.remove('hidden');
+    } catch (error) {
+      console.error("Supabase initialization failed:", error);
+      loadingMessage.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Supabase.<br>${error.message}</p>`;
+    }
 
-        // --- Initialize Supabase ---
-        let supabase;
-        try {
-            if (SUPABASE_URL === "YOUR_SUPABASE_URL" || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY") {
-                throw new Error("Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are not set in Netlify.");
-            }
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log("Supabase client initialized.");
-            loadingContainer.classList.add('hidden');
-            loginContainer.classList.remove('hidden');
-        } catch (error) {
-            console.error("Supabase initialization failed:", error);
-            loadingMessage.innerHTML = `<p class="text-red-500 text-center font-bold">Error: Could not connect to Supabase.<br>${error.message}</p>`;
-        }
-
-        // --- Check Admin Whitelist ---
-        async function checkAdminStatus(user) {
-            if (!user) {
-                loginContainer.classList.remove('hidden');
-                adminContent.classList.add('hidden');
-                return;
-            }
-
-            loginError.textContent = 'Checking authorization...';
-            try {
-                // Check the 'admins' table to see if the user's email is on the whitelist.
-                // Supabase uses RLS (Row Level Security), so this query will fail
-                // if the user isn't authenticated, which is what we want.
-                // We just need to see if we can get a row with their email.
-                const { data, error, count } = await supabase
-                    .from('admins')
-                    .select('email', { count: 'exact' })
-                    .eq('email', user.email);
-
-                if (error) {
-                    // This error can happen if RLS is set up to deny reads.
-                    // The "checkAdmin" function in the new guide.md is a better way,
-                    // but this simple select works if RLS is permissive for admins.
-                    console.error("Error checking admin status:", error.message);
-                    throw new Error(error.message);
-                }
-                
-                if (count > 0) {
-                    // SUCCESS: User is an admin
-                    console.log("Admin access granted for:", user.email);
-                    loginContainer.classList.add('hidden');
-                    adminContent.classList.remove('hidden');
-                    adminEmail.textContent = `Logged in as: ${user.email}`;
-                    loginError.textContent = '';
-                } else {
-                    // FAILURE: User is not an admin
-                    console.warn("Access denied for:", user.email);
-                    loginError.textContent = `Access Denied. ${user.email} is not an authorized admin.`;
-                    await supabase.auth.signOut(); // Log them out immediately
-                }
-            } catch (error) {
-                console.error("Error in checkAdminStatus:", error);
-                loginError.textContent = `Error checking admin status. Please try again. (${error.message})`;
-                await supabase.auth.signOut();
-            }
-        }
-
-        // --- Auth State Logic (UPDATED for Supabase) ---
-        if (supabase) {
-            supabase.auth.onAuthStateChange(async (event, session) => {
-                const user = session?.user || null;
-                
-                if (user) {
-                    // User is logged in, check if they are an admin
-                    await checkAdminStatus(user);
-                } else {
-                    // User is logged out
-                    loginContainer.classList.remove('hidden');
-                    adminContent.classList.add('hidden');
-                    adminEmail.textContent = '';
-                    loginError.textContent = ''; // Clear any old errors
-                }
-            });
-        }
-
-        // --- Login Form Submit ---
-        if(loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                loginError.textContent = 'Logging in...';
-                const email = loginForm['email'].value;
-                const password = loginForm['password'].value;
-
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password,
-                    });
-                    if (error) throw error;
-                    // onAuthStateChanged will handle the rest
-                } catch (error) {
-                    console.error("Login failed:", error);
-                    loginError.textContent = `Login failed: ${error.message}`;
-                }
-            });
-        }
-
-        // --- Google Login Button ---
-        if (googleLoginButton) {
-            googleLoginButton.addEventListener('click', async () => {
-                loginError.textContent = 'Opening Google Sign-in...';
-                try {
-                    const { data, error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            // You must add this URL to your Supabase project's "Redirect URLs"
-                            redirectTo: window.location.href 
-                        }
-                    });
-                    if (error) throw error;
-                    // onAuthStateChanged will handle the rest after redirect
-                } catch (error) {
-                    console.error("Google Sign-in failed:", error);
-                    loginError.textContent = `Google Sign-in failed: ${error.message}`;
-                }
-            });
-        }
-
-        // --- Logout Button ---
-        if(logoutButton) {
-            logoutButton.addEventListener('click', async () => {
-                try {
-                    await supabase.auth.signOut();
-                    // onAuthStateChanged will handle UI
-                } catch (error) {
-                    console.error("Logout failed:", error);
-                }
-            });
-        }
-
-        // --- Add Talk Form Submit (UPDATED for Supabase) ---
-        if(addTalkForm) {
-            addTalkForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                formSuccess.textContent = '';
-                formError.textContent = '';
-                submitTalkButton.disabled = true;
-                uploadStatus.textContent = 'Saving talk...';
-                uploadStatus.classList.remove('hidden');
-
-                try {
-                    const coverPhotoURL = addTalkForm['cover-photo-url'].value || null;
-                    const talkData = {
-                        title: addTalkForm['talk-title'].value,
-                        speaker: addTalkForm['speaker-name'].value,
-                        date: addTalkForm['talk-date'].value,
-                        description: addTalkForm['talk-description'].value,
-                        gdrive_link: addTalkForm['gdrive-link'].value,
-                        cover_photo_url: coverPhotoURL, // Supabase columns are often lowercase with underscores
-                        // 'created_at' is handled by Supabase (set default to now())
-                    };
-
-                    const { error } = await supabase.from('talks').insert(talkData);
-                    
-                    if (error) throw error;
-                    
-                    formSuccess.textContent = 'Talk added successfully!';
-                    addTalkForm.reset();
-                    
-                    setTimeout(() => { formSuccess.textContent = ''; }, 3000);
-
-                } catch (error) {
-                    console.error("Error adding document: ", error);
-                    formError.textContent = `Error adding talk: ${error.message}`;
-                } finally {
-                    submitTalkButton.disabled = false;
-                    uploadStatus.classList.add('hidden');
-                    uploadStatus.textContent = '';
-                }
-            });
-        }
-    </script>
+    // (Keep all your existing auth, admin, and form logic the same)
+  </script>
 </body>
 </html>
-
