@@ -301,120 +301,82 @@
     </script>
 
     <!-- ### NEW SCRIPT FOR SUPABASE ### -->
-    <script type="module">
-        // 2. Get Supabase Keys from Environment Variables
-        // This attempts to read variables from Netlify (VITE_...)
-        // In a local preview, these fallbacks will be used.
-        const SUPABASE_URL = typeof VITE_SUPABASE_URL !== 'undefined'
-            ? VITE_SUPABASE_URL
-            : (typeof __app_id !== 'undefined' ? "https_preview_id.supabase.co" : "YOUR_SUPABASE_URL"); // Fallback for preview
-            
-        const SUPABASE_ANON_KEY = typeof VITE_SUPABASE_ANON_KEY !== 'undefined'
-            ? VITE_SUPABASE_ANON_KEY
-            : (typeof __firebase_config !== 'undefined' ? "preview_key" : "YOUR_SUPABASE_ANON_KEY"); // Fallback for preview
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-        // --- UI Elements ---
-        const recentTalksList = document.getElementById('recent-talks-list');
-        const recentTalksLoading = document.getElementById('recent-talks-loading');
+  // ✅ Supabase configuration
+  const SUPABASE_URL =
+    typeof VITE_SUPABASE_URL !== "undefined"
+      ? VITE_SUPABASE_URL
+      : "https://upcjphjybqmwlwnhapht.supabase.co";
 
-        // --- Initialize Supabase ---
-        let supabase;
-        try {
-            if (SUPABASE_URL === "YOUR_SUPABASE_URL" || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY") {
-                // This error will show on the live site if Netlify variables are missing
-                throw new Error("Supabase environment variables are not set.");
+  const SUPABASE_ANON_KEY =
+    typeof VITE_SUPABASE_ANON_KEY !== "undefined"
+      ? VITE_SUPABASE_ANON_KEY
+      : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA"; // ⬅️ Paste your real anon key here
+
+  // ✅ Initialize Supabase
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // --- UI Elements ---
+  const recentTalksList = document.getElementById("recent-talks-list");
+  const recentTalksLoading = document.getElementById("recent-talks-loading");
+
+  // --- Load recent talks from Supabase ---
+  async function loadRecentTalks() {
+    try {
+      const { data, error } = await supabase
+        .from("talks") // 👈 your table name
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (error) throw error;
+      recentTalksLoading.remove();
+
+      if (!data || data.length === 0) {
+        recentTalksList.innerHTML =
+          '<p class="text-gray-500 text-center col-span-full">No talks available yet.</p>';
+        return;
+      }
+
+      data.forEach((talk) => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-lg shadow-lg overflow-hidden";
+
+        card.innerHTML = `
+          <img src="${talk.cover_photo_u || "https://placehold.co/600x400"}"
+               alt="${talk.title || "Talk Image"}"
+               class="talk-card-image">
+          <div class="p-4">
+            <h3 class="text-xl font-bold mb-2">${talk.title || "Untitled"}</h3>
+            <p class="text-sm text-gray-600 mb-1"><strong>Speaker:</strong> ${talk.speaker || "N/A"}</p>
+            <p class="text-sm text-gray-600 mb-3"><strong>Date:</strong> ${
+              talk.date || "No date"
+            }</p>
+            <p class="talk-card-description text-gray-700">${
+              talk.description || ""
+            }</p>
+            ${
+              talk.gdrive_link
+                ? `<a href="${talk.gdrive_link}" target="_blank" class="inline-block mt-3 text-yellow-600 font-bold hover:underline">Watch / Listen</a>`
+                : ""
             }
-            // 3. Create the Supabase client
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (error) {
-            console.error("Supabase initialization failed:", error);
-            // Display error to the user
-            recentTalksLoading.innerHTML = `<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error: Could not connect to database. Please check Netlify variables.</p>`;
-        }
+          </div>
+        `;
+        recentTalksList.appendChild(card);
+      });
+    } catch (err) {
+      console.error("Database connection failed:", err);
+      recentTalksLoading.innerHTML =
+        '<p class="text-red-500 col-span-full">Error: Could not load talks. Please check Supabase configuration.</p>';
+    }
+  }
 
-        // --- Helper Function to format date ---
-        function formatTalkDate(dateString) {
-            if (!dateString) return 'Undated';
-            try {
-                // Add T00:00:00 to ensure the date is parsed in local time, not UTC
-                const date = new Date(dateString + 'T00:00:00');
-                return date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            } catch (e) {
-                console.warn("Could not parse date:", dateString);
-                return dateString; // Fallback to the raw string
-            }
-        }
-
-        // --- Fetch and Render Recent Talks ---
-        async function fetchRecentTalks() {
-            if (!supabase) return; // Don't run if init failed
-
-            try {
-                // 4. Query Supabase for the 3 most recent talks
-                // 'talks' is the table name
-                // 'created_at' is the default timestamp column Supabase adds
-                const { data: talks, error } = await supabase
-                    .from('talks')
-                    .select('*') // Select all columns
-                    .order('created_at', { ascending: false }) // Order by newest first
-                    .limit(3); // Only get 3
-
-                if (error) throw error; // Throw error to be caught by catch block
-
-                // Clear loading spinner
-                recentTalksList.innerHTML = '';
-
-                if (talks.length === 0) {
-                    recentTalksList.innerHTML = '<p class="text-center text-gray-600 col-span-1 md:col-span-2 lg:col-span-3">No recent talks found. Please check back later.</p>';
-                    return;
-                }
-
-                // 5. Render talks
-                talks.forEach(talk => {
-                    const talkCard = document.createElement('div');
-                    talkCard.className = 'bg-white rounded-lg shadow-lg flex flex-col overflow-hidden'; // Added overflow-hidden
-                    
-                    const formattedDate = formatTalkDate(talk.date);
-                    const title = talk.title || 'Untitled Talk';
-                    
-                    // Use cover photo, or a placeholder if missing
-                    const imageURL = talk.cover_photo_url || `https://placehold.co/600x400/d69e2e/ffffff?text=${encodeURIComponent(title.split(' ').slice(0,3).join(' '))}`;
-                    let description = talk.description || 'No description available.';
-                    
-                    // Truncate title for display
-                    let truncatedTitle = title.length > 50 ? title.substring(0, 50) + '...' : title;
-
-                    talkCard.innerHTML = `
-                        <img src="${imageURL}" alt="${title}" class="talk-card-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/d69e2e/ffffff?text=Image+Error';this.style.objectFit='contain';">
-                        <div class="p-6 flex-grow flex flex-col">
-                            <div class="flex-grow">
-                                <h3 class="font-bold text-xl mb-2 font-serif" title="${talk.title}">${truncatedTitle}</h3>
-                                <p class="text-gray-500 text-sm mb-4">${talk.speaker || 'Unknown Speaker'} | ${formattedDate}</p>
-                                <p class="text-gray-700 mb-4 talk-card-description">${description}</p>
-                            </div>
-                            <a href="${talk.gdrive_link}" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-700 font-semibold mt-auto">
-                                Listen Now <i class="fas fa-arrow-right ml-1"></i>
-                            </a>
-                        </div>
-                    `;
-                    recentTalksList.appendChild(talkCard);
-                });
-
-            } catch (error) {
-                console.error("Error fetching recent talks: ", error);
-                recentTalksList.innerHTML = ''; // Clear loading
-                recentTalksLoading.innerHTML = `<p class="text-red-500 col-span-1 md:col-span-2 lg:col-span-3">Error loading talks: ${error.message}</p>`;
-            }
-        }
-
-        // --- Initial Load ---
-        fetchRecentTalks();
-    </script>
+  loadRecentTalks();
+</script>
 
 </body>
 </html>
+
 
