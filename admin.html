@@ -111,106 +111,62 @@
   </main>
 
   <script type="module">
-    const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA"; // ⬅️ Paste your real anon key here
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    const loginContainer = document.getElementById('login-container');
-    const registerContainer = document.getElementById('register-container');
-    const adminContent = document.getElementById('admin-content');
-    const adminEmail = document.getElementById('admin-email');
+  const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co"; 
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA"; 
 
-    const showRegister = document.getElementById('show-register');
-    const showLogin = document.getElementById('show-login');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Switch between login/register
-    showRegister.addEventListener('click', () => {
-      loginContainer.classList.add('hidden');
-      registerContainer.classList.remove('hidden');
-    });
-    showLogin.addEventListener('click', () => {
-      registerContainer.classList.add('hidden');
-      loginContainer.classList.remove('hidden');
-    });
+  const form = document.getElementById("talkForm");
 
-    // Login
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      const loginError = document.getElementById('login-error');
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById("title").value;
+    const speaker = document.getElementById("speaker").value;
+    const date = document.getElementById("date").value;
+    const description = document.getElementById("description").value;
+    const gdrive_link = document.getElementById("gdrive_link").value;
+    const fileInput = document.getElementById("cover_photo");
+
+    let cover_photo_url = null;
+
+    // --- 1️⃣ Upload the image to Supabase Storage ---
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const fileName = `${Date.now()}_${file.name}`;
+
+      const { data, error } = await supabase.storage
+        .from("talk-images") // 👈 create this bucket in Supabase Storage
+        .upload(fileName, file);
+
       if (error) {
-        loginError.textContent = error.message;
-      } else {
-        loginError.textContent = '';
-      }
-    });
-
-    // Register
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('register-email').value;
-      const password = document.getElementById('register-password').value;
-      const confirm = document.getElementById('register-confirm').value;
-      const registerError = document.getElementById('register-error');
-      const registerSuccess = document.getElementById('register-success');
-
-      if (password !== confirm) {
-        registerError.textContent = "Passwords do not match.";
+        alert("Image upload failed: " + error.message);
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) {
-        registerError.textContent = error.message;
-        registerSuccess.textContent = '';
-      } else {
-        registerError.textContent = '';
-        registerSuccess.textContent = "Account created! You can now log in.";
-      }
-    });
+      // --- 2️⃣ Get the public URL of the uploaded image ---
+      const { data: publicUrlData } = supabase.storage
+        .from("talk-images")
+        .getPublicUrl(fileName);
 
-    // Auth listener
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        loginContainer.classList.add('hidden');
-        registerContainer.classList.add('hidden');
-        adminContent.classList.remove('hidden');
-        adminEmail.textContent = `Logged in as: ${session.user.email}`;
-      } else {
-        loginContainer.classList.remove('hidden');
-        adminContent.classList.add('hidden');
-      }
-    });
+      cover_photo_url = publicUrlData.publicUrl;
+    }
 
-    // Logout
-    document.getElementById('logout-button').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-    });
+    // --- 3️⃣ Insert the talk record into Supabase ---
+    const { error: insertError } = await supabase
+      .from("talks")
+      .insert([{ title, speaker, date, description, gdrive_link, cover_photo_url }]);
 
-    // Add Talk
-    document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const talkData = {
-        title: document.getElementById('talk-title').value,
-        speaker: document.getElementById('speaker-name').value,
-        date: document.getElementById('talk-date').value,
-        description: document.getElementById('talk-description').value,
-        gdrive_link: document.getElementById('gdrive-link').value,
-      };
-      const { error } = await supabase.from('talks').insert(talkData);
-      const success = document.getElementById('form-success');
-      const fail = document.getElementById('form-error');
-      if (error) {
-        fail.textContent = error.message;
-        success.textContent = '';
-      } else {
-        success.textContent = 'Talk added successfully!';
-        fail.textContent = '';
-        e.target.reset();
-      }
-    });
+    if (insertError) {
+      alert("Error uploading talk: " + insertError.message);
+    } else {
+      alert("Talk uploaded successfully!");
+      form.reset();
+    }
+  });
   </script>
 </body>
 </html>
+
