@@ -112,14 +112,13 @@
 
   <script type="module">
     const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA"; // ⬅️ Paste your real anon key here
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const loginContainer = document.getElementById('login-container');
     const registerContainer = document.getElementById('register-container');
     const adminContent = document.getElementById('admin-content');
     const adminEmail = document.getElementById('admin-email');
-
     const showRegister = document.getElementById('show-register');
     const showLogin = document.getElementById('show-login');
 
@@ -139,12 +138,7 @@
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      const loginError = document.getElementById('login-error');
-      if (error) {
-        loginError.textContent = error.message;
-      } else {
-        loginError.textContent = '';
-      }
+      document.getElementById('login-error').textContent = error ? error.message : '';
     });
 
     // Register
@@ -161,7 +155,7 @@
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({ email, password });
       if (error) {
         registerError.textContent = error.message;
         registerSuccess.textContent = '';
@@ -189,19 +183,28 @@
       await supabase.auth.signOut();
     });
 
-    // Add Talk
+    // Add Talk with RLS-safe insert
     document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        document.getElementById('form-error').textContent = "You must be logged in to add a talk.";
+        return;
+      }
+
       const talkData = {
         title: document.getElementById('talk-title').value,
         speaker: document.getElementById('speaker-name').value,
         date: document.getElementById('talk-date').value,
         description: document.getElementById('talk-description').value,
         gdrive_link: document.getElementById('gdrive-link').value,
+        user_id: session.user.id // ✅ Ensure it matches your RLS policy
       };
+
       const { error } = await supabase.from('talks').insert(talkData);
       const success = document.getElementById('form-success');
       const fail = document.getElementById('form-error');
+
       if (error) {
         fail.textContent = error.message;
         success.textContent = '';
