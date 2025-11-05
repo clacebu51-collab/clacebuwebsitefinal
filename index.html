@@ -1,75 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ChristLife Assemblies | Cebu</title>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap"
-    rel="stylesheet">
-  <!-- Supabase JS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .font-serif {
-      font-family: 'Merriweather', serif;
-    }
-
+    body { font-family: 'Montserrat', sans-serif; }
+    .font-serif { font-family: 'Merriweather', serif; }
+    .nav-link { transition: color 0.3s, border-bottom-color 0.3s; }
+    .nav-link:hover { color: #d69e2e; border-bottom-color: #d69e2e; }
     .hero-bg {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('clacebu.jpg');
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('clacebu.jpg');
       background-size: cover;
       background-position: center;
       background-color: #4a5568;
     }
-
-    .nav-link {
-      transition: color 0.3s, border-bottom-color 0.3s;
-    }
-
-    .nav-link:hover {
-      color: #d69e2e;
-      border-bottom-color: #d69e2e;
-    }
-
-    .gallery-img {
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    }
-
-    .gallery-img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-
-    .talk-card-image {
-      height: 12rem;
-      width: 100%;
-      object-fit: cover;
-      border-top-left-radius: 0.5rem;
-      border-top-right-radius: 0.5rem;
-    }
-
-    .talk-card-description {
-      height: 4.5rem;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-    }
+    .gallery-img { transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; }
+    .gallery-img:hover { transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+    .talk-card-image { height: 12rem; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; }
+    .talk-card-description { min-height: 4.5rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
   </style>
 </head>
-
 <body class="bg-gray-50 text-gray-800">
 
   <!-- Header -->
@@ -77,10 +34,9 @@
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="index.html" class="flex items-center">
         <img src="logoooo onlyyy.png" alt="ChristLife Assemblies Logo" class="h-10 w-10 mr-3 rounded-full"
-          onerror="this.onerror=null;this.src='https://placehold.co/40x40/d69e2e/ffffff?text=Logo';">
+             onerror="this.onerror=null;this.src='https://placehold.co/40x40/d69e2e/ffffff?text=Logo';">
         <span class="text-2xl font-bold text-gray-800 font-serif">ChristLife Assemblies Cebu</span>
       </a>
-
       <div class="hidden md:flex space-x-8">
         <a href="#about" class="nav-link text-gray-600 border-b-2 border-transparent">About Us</a>
         <a href="talks.html" class="nav-link text-gray-600 border-b-2 border-transparent">Talks</a>
@@ -89,13 +45,10 @@
         <a href="#gallery" class="nav-link text-gray-600 border-b-2 border-transparent">Gallery</a>
         <a href="#contact" class="nav-link text-gray-600 border-b-2 border-transparent">Contact</a>
       </div>
-
       <button id="mobile-menu-button" class="md:hidden focus:outline-none">
         <i class="fas fa-bars text-2xl"></i>
       </button>
     </nav>
-
-    <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden">
       <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-100">About Us</a>
       <a href="talks.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Talks</a>
@@ -107,15 +60,10 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero-bg text-white">
-    <div class="container mx-auto px-6 py-32 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold font-serif mb-4">Welcome to ChristLife Assemblies Cebu</h1>
-      <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">Join us in worship and fellowship here in the heart of Cebu
-        City.</p>
-      <a href="#contact"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 inline-block">Plan
-        Your Visit</a>
-    </div>
+  <section class="hero-bg text-white text-center py-32">
+    <h1 class="text-4xl md:text-6xl font-bold font-serif mb-4">Welcome to ChristLife Assemblies Cebu</h1>
+    <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">Join us in worship and fellowship here in the heart of Cebu City.</p>
+    <a href="#contact" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300">Plan Your Visit</a>
   </section>
 
   <!-- About Section -->
@@ -128,30 +76,26 @@
       <div class="flex flex-col md:flex-row items-center gap-12">
         <div class="md:w-1/2">
           <img src="clacebu.jpg" alt="Church building" class="rounded-lg shadow-lg"
-            onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Our+Church';">
+               onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Our+Church';">
         </div>
         <div class="md:w-1/2">
-          <p class="mb-4 text-gray-700">Our Family of churches aims to live the life of Christ through the power of the
-            Holy Spirit and to advance the Kingdom of God here and now through communicating the Gospel of Jesus Christ
-            in words and in deeds.</p>
+          <p class="text-gray-700">Our Family of churches aims to live the life of Christ through the power of the Holy Spirit and to advance the Kingdom of God here and now through communicating the Gospel of Jesus Christ in words and deeds.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Worship Section -->
-  <section class="bg-gray-800 text-white py-16">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-3xl font-bold font-serif mb-6">Join Us for Worship</h2>
-      <div class="flex flex-col md:flex-row justify-center items-center gap-8">
-        <div class="bg-gray-700 p-6 rounded-lg">
-          <h3 class="text-xl font-bold text-yellow-400">Sunday Worship Service</h3>
-          <p class="mt-2">Every Sunday at 1:00 PM</p>
-        </div>
-        <div class="bg-gray-700 p-6 rounded-lg">
-          <h3 class="text-xl font-bold text-yellow-400">Mid-Week Meeting</h3>
-          <p class="mt-2">Every Thursday at 6:30 PM</p>
-        </div>
+  <section class="bg-gray-800 text-white py-16 text-center">
+    <h2 class="text-3xl font-bold font-serif mb-6">Join Us for Worship</h2>
+    <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+      <div class="bg-gray-700 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-yellow-400">Sunday Worship Service</h3>
+        <p class="mt-2">Every Sunday at 1:00 PM</p>
+      </div>
+      <div class="bg-gray-700 p-6 rounded-lg">
+        <h3 class="text-xl font-bold text-yellow-400">Mid-Week Meeting</h3>
+        <p class="mt-2">Every Thursday at 6:30 PM</p>
       </div>
     </div>
   </section>
@@ -170,44 +114,7 @@
         </div>
       </div>
       <div class="mt-12 text-center">
-        <a href="talks.html"
-          class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300">View
-          All Talks</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Events Section -->
-  <section id="events" class="py-20 bg-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold font-serif text-gray-800">Upcoming Events</h2>
-        <p class="text-gray-600 mt-2">Get involved in our Family.</p>
-      </div>
-      <div class="max-w-4xl mx-auto space-y-8">
-        <div class="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm">
-          <div class="bg-yellow-500 text-white text-center w-24 p-4 rounded-lg">
-            <p class="text-3xl font-bold">14</p>
-            <p class="text-sm">December</p>
-          </div>
-          <div class="pl-6">
-            <h3 class="font-bold text-xl">Year End Party</h3>
-            <p class="text-gray-600">Sunday, 8:00 AM - 12:00 PM</p>
-            <p class="text-gray-700 mt-1">Join us as we share blessings and activity.</p>
-          </div>
-        </div>
-
-        <div class="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm">
-          <div class="bg-yellow-500 text-white text-center w-24 p-4 rounded-lg">
-            <p class="text-3xl font-bold">18</p>
-            <p class="text-sm">October</p>
-          </div>
-          <div class="pl-6">
-            <h3 class="font-bold text-xl">Sunday Meeting</h3>
-            <p class="text-gray-600">Sunday, 1:00 PM - 3:00 PM</p>
-            <p class="text-gray-700 mt-1">Join us as we worship and share blessings.</p>
-          </div>
-        </div>
+        <a href="talks.html" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition duration-300">View All Talks</a>
       </div>
     </div>
   </section>
@@ -220,14 +127,10 @@
         <p class="text-gray-600 mt-2">A glimpse into our church family.</p>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <img class="gallery-img h-auto max-w-full rounded-lg" src="worship.jpg"
-          onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Worship';">
-        <img class="gallery-img h-auto max-w-full rounded-lg" src="community.jpg"
-          onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Community';">
-        <img class="gallery-img h-auto max-w-full rounded-lg" src="baptism.jpg"
-          onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Baptism';">
-        <img class="gallery-img h-auto max-w-full rounded-lg" src="fellowship.jpg"
-          onerror="this.onerror=null;this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Fellowship';">
+        <img class="gallery-img rounded-lg" src="worship.jpg" onerror="this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Worship';">
+        <img class="gallery-img rounded-lg" src="community.jpg" onerror="this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Community';">
+        <img class="gallery-img rounded-lg" src="baptism.jpg" onerror="this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Baptism';">
+        <img class="gallery-img rounded-lg" src="fellowship.jpg" onerror="this.src='https://placehold.co/400x400/a0aec0/ffffff?text=Fellowship';">
       </div>
     </div>
   </section>
@@ -246,41 +149,17 @@
           <p class="mb-2"><i class="fas fa-phone mr-2 text-yellow-600"></i>09205951752</p>
           <p class="mb-4"><i class="fas fa-envelope mr-2 text-yellow-600"></i>clacebu51@gmail.com</p>
           <div class="h-80 rounded-lg shadow-lg overflow-hidden">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.352462228514!2d123.8879683153549!3d10.31174699263445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9994abe988941%3A0x63a48e8983e23297!2sUrgello%20St%2C%20Cebu%20City%2C%20Cebu!5e0!3m2!1sen!2sph!4v1678886543210!5m2!1sen!2sph"
-              width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!..." width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
-
         <div class="md:w-1/2">
           <h3 class="text-xl font-bold mb-4">Send us a Prayer Request or Message</h3>
           <form action="https://formspree.io/f/xovlkebk" method="POST">
-            <div class="mb-4">
-              <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Your Name:</label>
-              <input type="text" id="name" name="name"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required>
-            </div>
-            <div class="mb-4">
-              <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Your Email:</label>
-              <input type="email" id="email" name="email"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required>
-            </div>
-            <div class="mb-4">
-              <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Your Contact Number:</label>
-              <input type="tel" id="phone" name="phone"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-            <div class="mb-4">
-              <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Your Message:</label>
-              <textarea id="message" name="message" rows="4"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required></textarea>
-            </div>
-            <button type="submit"
-              class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 w-full">Send
-              Message</button>
+            <input type="text" name="name" placeholder="Your Name" class="w-full mb-4 p-2 border rounded" required>
+            <input type="email" name="email" placeholder="Your Email" class="w-full mb-4 p-2 border rounded" required>
+            <input type="tel" name="phone" placeholder="Your Contact Number" class="w-full mb-4 p-2 border rounded">
+            <textarea name="message" rows="4" placeholder="Your Message" class="w-full mb-4 p-2 border rounded" required></textarea>
+            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-full font-bold">Send Message</button>
           </form>
         </div>
       </div>
@@ -289,83 +168,69 @@
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-white">
-    <div class="container mx-auto px-6 py-8">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <p class="text-center md:text-left">© 2025 ChristLife Assemblies Cebu. All Rights Reserved.</p>
-        <div class="flex mt-4 md:mt-0 space-x-6">
-          <a href="https://www.facebook.com/ChristlifeAssembliesCebu" target="_blank" rel="noopener noreferrer"
-            class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
-          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-        </div>
+    <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center">
+      <p>© 2025 ChristLife Assemblies Cebu. All Rights Reserved.</p>
+      <div class="flex space-x-6 mt-4 md:mt-0">
+        <a href="https://www.facebook.com/ChristlifeAssembliesCebu" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script>
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenuButton.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-        if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
-      });
+    document.getElementById("mobile-menu-button").addEventListener("click", () => {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
     });
   </script>
 
-  <!-- Supabase Recent Talks -->
+  <!-- ✅ Supabase Recent Talks -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
     const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const recentTalksList = document.getElementById("recent-talks-list");
     const recentTalksLoading = document.getElementById("recent-talks-loading");
 
+    function formatTalkDate(dateString) {
+      if (!dateString) return "Undated";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    }
+
     async function loadRecentTalks() {
       try {
-        const { data, error } = await supabase.from("talks").select("*").order("created_at", { ascending: false }).limit(6);
+        const { data: talks, error } = await supabase.from("talks").select("*").order("created_at", { ascending: false }).limit(6);
         if (error) throw error;
         recentTalksLoading.remove();
-
-        if (!data || data.length === 0) {
-          recentTalksList.innerHTML = '<p class="text-gray-500 text-center col-span-full">No talks available yet.</p>';
+        if (!talks || talks.length === 0) {
+          recentTalksList.innerHTML = `<p class="text-gray-500 text-center col-span-full">No talks available yet.</p>`;
           return;
         }
-
-        data.forEach(talk => {
+        talks.forEach(talk => {
+          const title = talk.title || "Untitled Talk";
+          const imageURL = talk.cover_url || talk.cover_photo_u || `https://placehold.co/600x400/d69e2e/ffffff?text=${encodeURIComponent(title)}`;
           const card = document.createElement("div");
-          card.className = "bg-white rounded-lg shadow-lg overflow-hidden";
+          card.className = "bg-white rounded-lg shadow-lg overflow-hidden flex flex-col";
           card.innerHTML = `
-            <img src="${talk.cover_photo_u || "https://placehold.co/600x400"}" alt="${talk.title || "Talk Image"}" class="talk-card-image">
-            <div class="p-4">
-              <h3 class="text-xl font-bold mb-2">${talk.title || "Untitled"}</h3>
-              <p class="text-sm text-gray-600 mb-1"><strong>Speaker:</strong> ${talk.speaker || "N/A"}</p>
-              <p class="text-sm text-gray-600 mb-3"><strong>Date:</strong> ${talk.date || "No date"}</p>
-              <p class="talk-card-description text-gray-700">${talk.description || ""}</p>
-              ${talk.gdrive_link ? `<a href="${talk.gdrive_link}" target="_blank" class="inline-block mt-3 text-yellow-600 font-bold hover:underline">Watch / Listen</a>` : ""}
-            </div>
-          `;
+            <img src="${imageURL}" alt="${title}" class="talk-card-image" onerror="this.src='https://placehold.co/600x400/d69e2e/ffffff?text=No+Image';">
+            <div class="p-6 flex flex-col flex-grow">
+              <h3 class="font-bold text-xl mb-2 font-serif">${title}</h3>
+              <p class="text-gray-500 text-sm mb-3">${talk.speaker || "Unknown Speaker"} | ${formatTalkDate(talk.date)}</p>
+              <p class="text-gray-700 mb-4 talk-card-description">${talk.description || "No description available."}</p>
+              ${talk.gdrive_link ? `<a href="${talk.gdrive_link}" target="_blank" class="text-yellow-600 font-semibold hover:text-yellow-700 mt-auto">Listen Now <i class="fas fa-arrow-right ml-1"></i></a>` : ""}
+            </div>`;
           recentTalksList.appendChild(card);
         });
       } catch (err) {
-        console.error("Database connection failed:", err);
-        recentTalksLoading.innerHTML = '<p class="text-red-500 col-span-full">Error: Could not load talks. Please check Supabase configuration.</p>';
+        console.error("Error fetching recent talks:", err);
+        recentTalksLoading.innerHTML = `<p class="text-red-500 col-span-full">Error loading talks. Please check Supabase configuration.</p>`;
       }
     }
 
     loadRecentTalks();
   </script>
-
 </body>
-
 </html>
