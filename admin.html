@@ -11,6 +11,8 @@
     .font-serif { font-family: 'Merriweather', serif; }
     .btn-main { background-color: #facc15; color: white; font-weight: bold; }
     .btn-main:hover { background-color: #eab308; }
+    .btn-delete { background-color: #ef4444; color: white; }
+    .btn-delete:hover { background-color: #dc2626; }
     .link { color: #2563eb; cursor: pointer; }
     .link:hover { text-decoration: underline; }
   </style>
@@ -41,48 +43,20 @@
       <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Login</button>
     </form>
     <p id="login-error" class="text-red-500 text-center mt-4"></p>
-    <p class="text-center text-sm mt-4">Don't have an account? 
-      <span id="show-register" class="link">Register</span>
-    </p>
-  </div>
-
-  <!-- Registration Form -->
-  <div id="register-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold font-serif mb-6 text-center">Register</h2>
-    <form id="register-form">
-      <div class="mb-4">
-        <label class="block text-sm font-bold mb-2">Email:</label>
-        <input type="email" id="register-email" class="border rounded w-full py-2 px-3" required />
-      </div>
-      <div class="mb-4">
-        <label class="block text-sm font-bold mb-2">Password:</label>
-        <input type="password" id="register-password" class="border rounded w-full py-2 px-3" required />
-      </div>
-      <div class="mb-6">
-        <label class="block text-sm font-bold mb-2">Confirm Password:</label>
-        <input type="password" id="register-confirm" class="border rounded w-full py-2 px-3" required />
-      </div>
-      <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Create Account</button>
-    </form>
-    <p id="register-error" class="text-red-500 text-center mt-4"></p>
-    <p id="register-success" class="text-green-600 text-center mt-4"></p>
-    <p class="text-center text-sm mt-4">Already have an account? 
-      <span id="show-login" class="link">Login</span>
-    </p>
   </div>
 
   <!-- Admin Panel -->
-  <div id="admin-content" class="hidden max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
-
+  <div id="admin-content" class="hidden max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md">
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+        <h2 class="text-2xl font-bold font-serif">Manage Talks</h2>
         <p id="admin-email" class="text-sm text-gray-500"></p>
       </div>
       <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full">Logout</button>
     </div>
 
-    <form id="add-talk-form">
+    <!-- Add Talk Form -->
+    <form id="add-talk-form" class="mb-8">
       <div class="mb-4">
         <label class="block text-sm font-bold mb-2">Talk Title:</label>
         <input type="text" id="talk-title" class="border rounded w-full py-2 px-3" required />
@@ -99,114 +73,75 @@
         <label class="block text-sm font-bold mb-2">Description:</label>
         <textarea id="talk-description" rows="3" class="border rounded w-full py-2 px-3" required></textarea>
       </div>
-
-      <!-- Image Upload -->
       <div class="mb-4">
         <label class="block text-sm font-bold mb-2">Cover Image (600x400):</label>
         <input type="file" id="cover-image" accept="image/*" class="border rounded w-full py-2 px-3" required />
-        <p class="text-xs text-gray-500 mt-1">Upload a 600x400 image to display on the main page.</p>
       </div>
-
       <div class="mb-4">
         <label class="block text-sm font-bold mb-2">Google Drive Link:</label>
         <input type="url" id="gdrive-link" class="border rounded w-full py-2 px-3" required />
       </div>
-
       <button type="submit" class="btn-main py-2 px-4 rounded-full w-full">Add Talk</button>
       <p id="form-success" class="text-green-600 text-center mt-4"></p>
       <p id="form-error" class="text-red-500 text-center mt-4"></p>
     </form>
 
-    <!-- Manage Talks -->
-    <h2 class="text-2xl font-bold font-serif mt-10 mb-4">Manage Talks</h2>
-    <div id="talks-management" class="space-y-4"></div>
-
+    <!-- Talks List -->
+    <h3 class="text-xl font-bold mb-4 font-serif">Existing Talks</h3>
+    <div id="talks-list" class="space-y-4"></div>
   </div>
 
 </main>
 
 <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
   const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const loginContainer = document.getElementById('login-container');
-  const registerContainer = document.getElementById('register-container');
   const adminContent = document.getElementById('admin-content');
   const adminEmail = document.getElementById('admin-email');
-  const showRegister = document.getElementById('show-register');
-  const showLogin = document.getElementById('show-login');
+  const talksList = document.getElementById('talks-list');
+  const loginError = document.getElementById('login-error');
 
-  // Switch login/register
-  showRegister.addEventListener('click', () => {
-    loginContainer.classList.add('hidden');
-    registerContainer.classList.remove('hidden');
-  });
-  showLogin.addEventListener('click', () => {
-    registerContainer.classList.add('hidden');
-    loginContainer.classList.remove('hidden');
-  });
+  let currentSession = null;
 
   // Login
-  document.getElementById('login-form').addEventListener('submit', async (e) => {
+  document.getElementById('login-form').addEventListener('submit', async e => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    document.getElementById('login-error').textContent = error ? error.message : '';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) loginError.textContent = error.message;
   });
 
-  // Register
-  document.getElementById('register-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const confirm = document.getElementById('register-confirm').value;
-    const registerError = document.getElementById('register-error');
-    const registerSuccess = document.getElementById('register-success');
-
-    if (password !== confirm) {
-      registerError.textContent = "Passwords do not match.";
-      return;
-    }
-
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      registerError.textContent = error.message;
-      registerSuccess.textContent = '';
-    } else {
-      registerError.textContent = '';
-      registerSuccess.textContent = "Account created! You can now log in.";
-    }
+  // Logout
+  document.getElementById('logout-button').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    currentSession = null;
   });
 
   // Auth listener
   supabase.auth.onAuthStateChange(async (event, session) => {
+    currentSession = session;
     if (session?.user) {
       loginContainer.classList.add('hidden');
-      registerContainer.classList.add('hidden');
       adminContent.classList.remove('hidden');
       adminEmail.textContent = `Logged in as: ${session.user.email}`;
       loadAllTalks();
     } else {
       loginContainer.classList.remove('hidden');
       adminContent.classList.add('hidden');
+      talksList.innerHTML = '';
     }
   });
 
-  // Logout
-  document.getElementById('logout-button').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-  });
-
-  // Add Talk + upload image
-  document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
+  // Add Talk
+  document.getElementById('add-talk-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      document.getElementById('form-error').textContent = "You must be logged in to add a talk.";
-      return;
-    }
+    if (!currentSession) return;
 
     const title = document.getElementById('talk-title').value;
     const speaker = document.getElementById('speaker-name').value;
@@ -220,12 +155,10 @@
     if (imageFile) {
       const fileName = `${Date.now()}-${imageFile.name}`;
       const { error: uploadError } = await supabase.storage.from('talk-covers').upload(fileName, imageFile);
-
       if (uploadError) {
-        document.getElementById('form-error').textContent = "Image upload failed: " + uploadError.message;
+        document.getElementById('form-error').textContent = uploadError.message;
         return;
       }
-
       const { data: publicUrlData } = supabase.storage.from('talk-covers').getPublicUrl(fileName);
       cover_url = publicUrlData.publicUrl;
     }
@@ -237,72 +170,52 @@
       description,
       gdrive_link,
       cover_url,
-      user_id: session.user.id
+      user_id: currentSession.user.id
     });
 
-    const success = document.getElementById('form-success');
-    const fail = document.getElementById('form-error');
-
     if (error) {
-      fail.textContent = error.message;
-      success.textContent = '';
+      document.getElementById('form-error').textContent = error.message;
+      document.getElementById('form-success').textContent = '';
     } else {
-      success.textContent = '✅ Talk added successfully!';
-      fail.textContent = '';
+      document.getElementById('form-success').textContent = '✅ Talk added successfully!';
+      document.getElementById('form-error').textContent = '';
       e.target.reset();
       loadAllTalks();
     }
   });
 
-  // Load all talks for management
+  // Load all talks
   async function loadAllTalks() {
-    const { data: talks, error } = await supabase
-      .from('talks')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    const container = document.getElementById('talks-management');
-    container.innerHTML = '';
-
+    talksList.innerHTML = 'Loading...';
+    const { data, error } = await supabase.from('talks').select('*').order('created_at', { ascending: false });
     if (error) {
-      container.innerHTML = `<p class="text-red-500">Error loading talks: ${error.message}</p>`;
+      talksList.innerHTML = `<p class="text-red-500">${error.message}</p>`;
       return;
     }
 
-    if (!talks || talks.length === 0) {
-      container.innerHTML = '<p class="text-gray-600">No talks available yet.</p>';
-      return;
-    }
+    talksList.innerHTML = '';
+    data.forEach(talk => {
+      const card = document.createElement('div');
+      card.className = 'bg-gray-50 p-4 rounded-lg flex justify-between items-center shadow';
 
-    talks.forEach(talk => {
-      const talkDiv = document.createElement('div');
-      talkDiv.className = "bg-gray-50 p-4 rounded-lg shadow flex justify-between items-center";
-
-      talkDiv.innerHTML = `
+      card.innerHTML = `
         <div>
-          <p class="font-bold">${talk.title}</p>
+          <h4 class="font-bold">${talk.title}</h4>
           <p class="text-sm text-gray-600">${talk.speaker} | ${talk.date}</p>
         </div>
-        <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded delete-btn" data-id="${talk.id}">
-          Delete
-        </button>
+        <button class="btn-delete py-1 px-3 rounded" data-id="${talk.id}">Delete</button>
       `;
-
-      container.appendChild(talkDiv);
+      talksList.appendChild(card);
     });
 
-    // Attach delete listeners
-    document.querySelectorAll('.delete-btn').forEach(btn => {
+    // Add delete functionality
+    document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', async () => {
         const talkId = btn.getAttribute('data-id');
-        if (confirm('Are you sure you want to delete this talk?')) {
-          const { error } = await supabase.from('talks').delete().eq('id', talkId);
-          if (error) {
-            alert('Delete failed: ' + error.message);
-          } else {
-            loadAllTalks();
-          }
-        }
+        if (!confirm('Are you sure you want to delete this talk?')) return;
+        const { error } = await supabase.from('talks').delete().eq('id', talkId);
+        if (error) alert(error.message);
+        else loadAllTalks();
       });
     });
   }
