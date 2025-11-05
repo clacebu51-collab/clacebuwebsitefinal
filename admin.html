@@ -21,186 +21,247 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-  <header class="bg-white shadow-md">
-    <div class="container mx-auto px-6 py-4">
-      <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
-      <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management</p>
-    </div>
-  </header>
+<header class="bg-white shadow-md">
+  <div class="container mx-auto px-6 py-4">
+    <h1 class="text-3xl font-bold text-gray-800 font-serif">Admin Portal</h1>
+    <p class="text-gray-600">ChristLife Assemblies Cebu - Talk Management</p>
+  </div>
+</header>
 
-  <main class="container mx-auto p-6">
-    <!-- Login Form -->
-    <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
-      <form id="login-form">
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Email:</label>
-          <input type="email" id="login-email" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <div class="mb-6">
-          <label class="block text-sm font-bold mb-2">Password:</label>
-          <input type="password" id="login-password" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Login</button>
-      </form>
-      <p id="login-error" class="text-red-500 text-center mt-4"></p>
-    </div>
+<main class="container mx-auto p-6">
 
-    <!-- Admin Panel -->
-    <div id="admin-content" class="hidden max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
-          <p id="admin-email" class="text-sm text-gray-500"></p>
-        </div>
-        <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full">Logout</button>
+  <!-- Login Form -->
+  <div id="login-container" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold font-serif mb-6 text-center">Admin Login</h2>
+    <form id="login-form">
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Email:</label>
+        <input type="email" id="login-email" class="border rounded w-full py-2 px-3" required />
       </div>
+      <div class="mb-6">
+        <label class="block text-sm font-bold mb-2">Password:</label>
+        <input type="password" id="login-password" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <button type="submit" class="btn-main py-2 px-4 rounded-full w-full transition">Login</button>
+    </form>
+    <p id="login-error" class="text-red-500 text-center mt-4"></p>
+    <p class="text-center text-sm mt-4">Don't have an account? 
+      <span id="show-register" class="link">Register</span>
+    </p>
+  </div>
 
-      <form id="add-talk-form">
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Talk Title:</label>
-          <input type="text" id="talk-title" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Speaker Name:</label>
-          <input type="text" id="speaker-name" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Talk Date:</label>
-          <input type="date" id="talk-date" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Description:</label>
-          <textarea id="talk-description" rows="3" class="border rounded w-full py-2 px-3" required></textarea>
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Cover Image (600x400):</label>
-          <input type="file" id="cover-image" accept="image/*" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">Google Drive Link:</label>
-          <input type="url" id="gdrive-link" class="border rounded w-full py-2 px-3" required />
-        </div>
-        <button type="submit" class="btn-main py-2 px-4 rounded-full w-full">Add Talk</button>
-        <p id="form-success" class="text-green-600 text-center mt-4"></p>
-        <p id="form-error" class="text-red-500 text-center mt-4"></p>
-      </form>
+  <!-- Registration Form -->
+  <div id="register-container" class="hidden max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold font-serif mb-6 text-center">Register</h2>
+    <form id="register-form">
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Email:</label>
+        <input type="email" id="register-email" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Password:</label>
+        <input type="password" id="register-password" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-bold mb-2">Confirm Password:</label>
+        <input type="password" id="register-confirm" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <button type="submit" class="btn-main py-2 px-4 rounded-full w-full">Create Account</button>
+    </form>
+    <p id="register-error" class="text-red-500 text-center mt-4"></p>
+    <p id="register-success" class="text-green-600 text-center mt-4"></p>
+    <p class="text-center text-sm mt-4">Already have an account? 
+      <span id="show-login" class="link">Login</span>
+    </p>
+  </div>
 
-      <hr class="my-6">
-
-      <h3 class="text-xl font-bold font-serif mb-4">All Talks</h3>
-      <div id="talks-list"></div>
+  <!-- Admin Panel -->
+  <div id="admin-content" class="hidden max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-2xl font-bold font-serif">Add New Talk</h2>
+        <p id="admin-email" class="text-sm text-gray-500"></p>
+      </div>
+      <button id="logout-button" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-full">Logout</button>
     </div>
-  </main>
+
+    <form id="add-talk-form">
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Talk Title:</label>
+        <input type="text" id="talk-title" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Speaker Name:</label>
+        <input type="text" id="speaker-name" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Talk Date:</label>
+        <input type="date" id="talk-date" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Description:</label>
+        <textarea id="talk-description" rows="3" class="border rounded w-full py-2 px-3" required></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Cover Image (600x400):</label>
+        <input type="file" id="cover-image" accept="image/*" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">Google Drive Link:</label>
+        <input type="url" id="gdrive-link" class="border rounded w-full py-2 px-3" required />
+      </div>
+      <button type="submit" class="btn-main py-2 px-4 rounded-full w-full">Add Talk</button>
+      <p id="form-success" class="text-green-600 text-center mt-4"></p>
+      <p id="form-error" class="text-red-500 text-center mt-4"></p>
+    </form>
+
+    <hr class="my-6">
+
+    <h3 class="text-xl font-bold font-serif mb-4">All Talks</h3>
+    <div id="talks-list"></div>
+  </div>
+
+</main>
 
 <script type="module">
-  const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = "https://upcjphjybqmwlwnhapht.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwY2pwaGp5YnFtd2x3bmhhcGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjc3NDgsImV4cCI6MjA3Nzg0Mzc0OH0.MyBXSXaWrBGz8aWdUdaB-jwrlHvgloAvusL0a3gpsFA";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const loginContainer = document.getElementById('login-container');
-  const adminContent = document.getElementById('admin-content');
-  const adminEmail = document.getElementById('admin-email');
-  const loginError = document.getElementById('login-error');
-  const formSuccess = document.getElementById('form-success');
-  const formError = document.getElementById('form-error');
-  const talksList = document.getElementById('talks-list');
+const loginContainer = document.getElementById('login-container');
+const registerContainer = document.getElementById('register-container');
+const adminContent = document.getElementById('admin-content');
+const adminEmail = document.getElementById('admin-email');
+const loginError = document.getElementById('login-error');
+const formSuccess = document.getElementById('form-success');
+const formError = document.getElementById('form-error');
+const talksList = document.getElementById('talks-list');
+const showRegister = document.getElementById('show-register');
+const showLogin = document.getElementById('show-login');
+const registerError = document.getElementById('register-error');
+const registerSuccess = document.getElementById('register-success');
 
-  // Login
-  document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    loginError.textContent = '';
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) loginError.textContent = error.message;
-    else showAdmin(data.user);
-  });
+// Switch login/register
+showRegister.addEventListener('click', () => {
+  loginContainer.classList.add('hidden');
+  registerContainer.classList.remove('hidden');
+});
+showLogin.addEventListener('click', () => {
+  registerContainer.classList.add('hidden');
+  loginContainer.classList.remove('hidden');
+});
 
-  // Auth state listener
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (session?.user) showAdmin(session.user);
-    else hideAdmin();
-  });
+// Register
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  registerError.textContent = '';
+  registerSuccess.textContent = '';
+  const email = document.getElementById('register-email').value;
+  const password = document.getElementById('register-password').value;
+  const confirm = document.getElementById('register-confirm').value;
+  if (password !== confirm) { registerError.textContent = 'Passwords do not match.'; return; }
+  const { error } = await supabase.auth.signUp({ email, password });
+  if (error) registerError.textContent = error.message;
+  else registerSuccess.textContent = '✅ Account created! You can now log in.';
+});
 
-  function showAdmin(user) {
-    loginContainer.classList.add('hidden');
-    adminContent.classList.remove('hidden');
-    adminEmail.textContent = `Logged in as: ${user.email}`;
+// Login
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  loginError.textContent = '';
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) loginError.textContent = error.message;
+  else showAdmin(data.user);
+});
+
+// Auth listener
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session?.user) showAdmin(session.user);
+  else hideAdmin();
+});
+
+function showAdmin(user) {
+  loginContainer.classList.add('hidden');
+  registerContainer.classList.add('hidden');
+  adminContent.classList.remove('hidden');
+  adminEmail.textContent = `Logged in as: ${user.email}`;
+  loadAllTalks();
+}
+
+function hideAdmin() {
+  loginContainer.classList.remove('hidden');
+  registerContainer.classList.add('hidden');
+  adminContent.classList.add('hidden');
+  talksList.innerHTML = '';
+}
+
+// Logout
+document.getElementById('logout-button').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  hideAdmin();
+});
+
+// Add Talk
+document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  formSuccess.textContent = '';
+  formError.textContent = '';
+
+  const title = document.getElementById('talk-title').value;
+  const speaker = document.getElementById('speaker-name').value;
+  const date = document.getElementById('talk-date').value;
+  const description = document.getElementById('talk-description').value;
+  const gdrive_link = document.getElementById('gdrive-link').value;
+  const imageFile = document.getElementById('cover-image').files[0];
+
+  let cover_url = null;
+  if (imageFile) {
+    const fileName = `${Date.now()}-${imageFile.name}`;
+    const { error: uploadError } = await supabase.storage.from('talk-covers').upload(fileName, imageFile);
+    if (uploadError) { formError.textContent = uploadError.message; return; }
+    const { data: publicUrlData } = supabase.storage.from('talk-covers').getPublicUrl(fileName);
+    cover_url = publicUrlData.publicUrl;
+  }
+
+  const { error } = await supabase.from('talks').insert({ title, speaker, date, description, gdrive_link, cover_url });
+  if (error) formError.textContent = error.message;
+  else {
+    formSuccess.textContent = '✅ Talk added successfully!';
+    e.target.reset();
     loadAllTalks();
   }
+});
 
-  function hideAdmin() {
-    loginContainer.classList.remove('hidden');
-    adminContent.classList.add('hidden');
-    talksList.innerHTML = '';
-  }
+// Load all talks
+async function loadAllTalks() {
+  talksList.innerHTML = '';
+  const { data: talks, error } = await supabase.from('talks').select('*').order('created_at', { ascending: false });
+  if (error) { talksList.innerHTML = `<p class="text-red-600">${error.message}</p>`; return; }
+  if (!talks || talks.length === 0) { talksList.innerHTML = `<p>No talks yet.</p>`; return; }
 
-  // Logout
-  document.getElementById('logout-button').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    hideAdmin();
-  });
+  talks.forEach(talk => {
+    const card = document.createElement('div');
+    card.className = 'talk-card';
+    card.innerHTML = `
+      <img src="${talk.cover_url || 'https://placehold.co/600x400/d69e2e/ffffff?text=No+Image'}" alt="${talk.title}">
+      <h4 class="font-bold mt-2">${talk.title}</h4>
+      <p class="text-sm text-gray-600">${talk.speaker} | ${talk.date}</p>
+      <p class="text-sm mt-1">${talk.description}</p>
+      <a href="${talk.gdrive_link}" target="_blank" class="text-yellow-600 font-semibold">Listen</a>
+      <button class="delete-btn mt-2" data-id="${talk.id}">Delete</button>
+    `;
+    talksList.appendChild(card);
 
-  // Add Talk
-  document.getElementById('add-talk-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    formSuccess.textContent = '';
-    formError.textContent = '';
-
-    const title = document.getElementById('talk-title').value;
-    const speaker = document.getElementById('speaker-name').value;
-    const date = document.getElementById('talk-date').value;
-    const description = document.getElementById('talk-description').value;
-    const gdrive_link = document.getElementById('gdrive-link').value;
-    const imageFile = document.getElementById('cover-image').files[0];
-
-    let cover_url = null;
-    if (imageFile) {
-      const fileName = `${Date.now()}-${imageFile.name}`;
-      const { error: uploadError } = await supabase.storage.from('talk-covers').upload(fileName, imageFile);
-      if (uploadError) { formError.textContent = uploadError.message; return; }
-      const { data: publicUrlData } = supabase.storage.from('talk-covers').getPublicUrl(fileName);
-      cover_url = publicUrlData.publicUrl;
-    }
-
-    const { error } = await supabase.from('talks').insert({ title, speaker, date, description, gdrive_link, cover_url });
-    if (error) formError.textContent = error.message;
-    else {
-      formSuccess.textContent = '✅ Talk added successfully!';
-      e.target.reset();
-      loadAllTalks();
-    }
-  });
-
-  // Load all talks
-  async function loadAllTalks() {
-    talksList.innerHTML = '';
-    const { data: talks, error } = await supabase.from('talks').select('*').order('created_at', { ascending: false });
-    if (error) { talksList.innerHTML = `<p class="text-red-600">${error.message}</p>`; return; }
-    if (!talks || talks.length === 0) { talksList.innerHTML = `<p>No talks yet.</p>`; return; }
-
-    talks.forEach(talk => {
-      const card = document.createElement('div');
-      card.className = 'talk-card';
-      card.innerHTML = `
-        <img src="${talk.cover_url || 'https://placehold.co/600x400/d69e2e/ffffff?text=No+Image'}" alt="${talk.title}">
-        <h4 class="font-bold mt-2">${talk.title}</h4>
-        <p class="text-sm text-gray-600">${talk.speaker} | ${talk.date}</p>
-        <p class="text-sm mt-1">${talk.description}</p>
-        <a href="${talk.gdrive_link}" target="_blank" class="text-yellow-600 font-semibold">Listen</a>
-        <button class="delete-btn mt-2" data-id="${talk.id}">Delete</button>
-      `;
-      talksList.appendChild(card);
-
-      card.querySelector('.delete-btn').addEventListener('click', async () => {
-        if (!confirm('Are you sure you want to delete this talk?')) return;
-        const { error } = await supabase.from('talks').delete().eq('id', talk.id);
-        if (error) alert('Delete failed: ' + error.message);
-        else loadAllTalks();
-      });
+    card.querySelector('.delete-btn').addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this talk?')) return;
+      const { error } = await supabase.from('talks').delete().eq('id', talk.id);
+      if (error) alert('Delete failed: ' + error.message);
+      else loadAllTalks();
     });
-  }
+  });
+}
 </script>
 
 </body>
